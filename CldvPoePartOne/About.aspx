@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="About" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="About.aspx.cs" Inherits="CldvPoePartOne.About" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="container">
+    <div class="container" style="background-color:azure">
         <div class="row">
             <div class="col-md-8 mx-auto">
                 <div class="card shadow">

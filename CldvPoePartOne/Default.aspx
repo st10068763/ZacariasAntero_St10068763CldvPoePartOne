@@ -1,12 +1,12 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CldvPoePartOne._Default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="container">
+    <div class="container" style="background-color:antiquewhite">
         <div class="row">
             <div class="col-md-12">
                 <div class="jumbotron text-center">
                     <h1 class="display-4">Welcome to KhumaloCraft Emporium</h1>
-                    <p class="lead">Discover Handcrafted Treasures from Artisans Around the World</p>
+                    <p class="lead">Discover&nbsp; Great Handcrafted Treasures from Artisans Around the World!</p>
                     <hr class="my-4">
                     <p class="lead">
                         <a class="btn btn-primary btn-lg" href="http://www.asp.net" role="button">Learn more</a>
@@ -29,9 +29,9 @@
             <div class="col-md-4">
                 <div class="card mb-4 shadow">
                     <div class="card-body">
-                        <h2 class="card-title">About Us</h2>
+                        <h2 class="card-title">About us</h2>
                         <p class="card-text">Learn more about KhumaloCraft Emporium and our mission.</p>
-                        <a href="About.aspx" class="btn btn-primary">About Us</a>
+                        <a href="About.aspx" class="btn btn-primary">About us</a>
                     </div>
                 </div>
             </div>
@@ -39,9 +39,9 @@
             <div class="col-md-4">
                 <div class="card mb-4 shadow">
                     <div class="card-body">
-                        <h2 class="card-title">Contact Us</h2>
-                        <p class="card-text">Have questions or feedback? Reach out to us!</p>
-                        <a href="Contact.aspx" class="btn btn-primary">Contact Us</a>
+                        <h2 class="card-title">Contact us</h2>
+                        <p class="card-text">Have questions or feedback? Reach out to us at any time!</p>
+                        <a href="Contact.aspx" class="btn btn-primary">Contact us</a>
                     </div>
                 </div>
             </div>

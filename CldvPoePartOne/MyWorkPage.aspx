@@ -63,7 +63,7 @@
         </div>
     </nav>
     <!------------------------------------Container------------------------------------------------->
-    <div class="container">
+    <div class="container" style="background-color:azure">
         <h1 class="mt-5 mb-4">Explore Our Craftwork</h1>
 
         <div class="row">

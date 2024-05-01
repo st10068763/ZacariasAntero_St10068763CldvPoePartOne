@@ -50,6 +50,8 @@
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/About">About</a></li>
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contact</a></li>
                          <li class="nav-item"><a class="nav-link" runat="server" href="~/MyWorkPage">My Work</a></li>
+                         <li class="nav-item"><a class="nav-link" runat="server" href="~/LoginPage">Login user</a></li>
+                         <li class="nav-item"><a class="nav-link" runat="server" href="~/SigninPage">Create a new account</a></li>
                     </ul>
                 </div>
             </div>

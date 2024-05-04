@@ -25,49 +25,61 @@ namespace CldvPoePartOne
             }
 
             // Connect to SQL Server database
-            string connectionString = "Your_SQL_Server_Connection_String";
+            string connectionString =  "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            // Create a connection to the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
+                    // Open the connection
                     connection.Open();
-
-                    string query = "SELECT user_id, password_hash FROM Users WHERE (name = @username OR email = @username)";
+                    // Query to retrieve user ID and password 
+                    string query = "SELECT User_ID, Password_hash FROM Users WHERE (User_Name = @username OR Email = @username)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@username", usernameInput);
-
-                        SqlDataReader reader = command.ExecuteReader();
+                       // Execute the query and read the results
+                       using (SqlDataReader reader = command.ExecuteReader())
+                        // check is the user exists in the database
                         if (reader.HasRows)
                         {
                             reader.Read(); // Read the first row
-                            string storedHash = reader["password_hash"].ToString(); // Get the stored password hash
+                          
+                            int userId = (int)reader["User_ID"]; // Get the user ID
 
-                            // Validate password with the stored hash
-                            bool isPasswordCorrect = VerifyPassword(passwordInput, storedHash);
-                            if (isPasswordCorrect)
+                            string storedHash = reader["Password_hash"].ToString();
+
+                            if(passwordInput == storedHash)
                             {
                                 // Successful login, set session variable and redirect
-                                Session["UserId"] = reader["user_id"];
-                                Response.Redirect("Dashboard.aspx");
+                                Session["UserId"] = userId;
+                                // Redirect to the home page
+                                Response.Redirect("Default.aspx");
                             }
                             else
                             {
-                                ShowError("Invalid username or password."); // Display error message
-                            }
+                                ShowError("Incorrect password."); // Display error message
+                            }                           
                         }
+                        // displays a message if the user does not exist
                         else
                         {
-                            ShowError("Invalid username or password."); // Display error message
-                        }
+                            ShowError("Invalid username."); 
+                        }                       
                     }
                 }
                 catch (SqlException ex)
                 {
                     ShowError($"Database connection error: {ex.Message}"); // Handle SQL exceptions
                 }
+
+                finally
+                {
+                    connection.Close(); // Close the connection
+                }
             }
         }
+
 
         // Function to show error messages in the frontend
         private void ShowError(string message)

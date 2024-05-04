@@ -107,8 +107,9 @@
                     <option value="buyer">Buyer</option>
                     <option value="seller">Seller</option>
                 </select>
-                <!-- Submit button -->
-                <button type="submit" class="signin-button">Sign In</button>
+                <!-- sign in  button -->
+                <button type="submit" runat="server" onserverclick="Signin_Click" class="signin-button">Sign In</button>
+                
                 <div id="error-message" class="error-message"></div>
             </div>
         </div>

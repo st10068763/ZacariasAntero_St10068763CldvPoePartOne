@@ -14,55 +14,94 @@ namespace CldvPoePartOne
         {
 
         }
+
+
+        /// <summary>
+        /// Sign in button click event handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void Signin_Click(object sender, EventArgs e)
         {
+            // Get user input from the form
             string nameInput = name.Value;
             string emailInput = email.Value;
             string passwordInput = password.Value;
             string roleInput = role.Value;
 
+            // Validate input to ensure no empty fields
             if (string.IsNullOrWhiteSpace(nameInput) ||
                 string.IsNullOrWhiteSpace(emailInput) ||
                 string.IsNullOrWhiteSpace(passwordInput) ||
                 string.IsNullOrWhiteSpace(roleInput))
             {
+                // Show an error message if any field is empty as they are all required
                 ShowError("All fields are required.");
                 return;
             }
 
-            string connectionString = "@Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=***********;Trust Server Certificate=True";
+            // this method will insert the new user into the database
+            InsertUser(nameInput, emailInput, passwordInput, roleInput);
+
+        }
+
+        // Method to insert new user into the database
+        private void InsertUser(string name, string email, string password, string role)
+        {
+            // connection string 
+            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            // Create a connection to the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-
                     // Check if email already exists
-                    string checkQuery = "SELECT email FROM Users WHERE email = @Email";
+                    string checkQuery = "SELECT User_Name, Email FROM Users WHERE User_Name = @Name OR Email =@Email";
+
                     using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {
-                        checkCommand.Parameters.AddWithValue("@Email", emailInput);
+                        checkCommand.Parameters.AddWithValue("@Name", name);
+                        checkCommand.Parameters.AddWithValue("@Email", email);
 
-                        SqlDataReader reader = checkCommand.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            ShowError("Email already in use.");
-                            return;
-                        }
+                            using (SqlDataReader reader = checkCommand.ExecuteReader())
+
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    string storedName = reader["User_Name"].ToString();
+                                    string storedEmail = reader["Email"].ToString();
+
+                                    if (email.Equals(storedEmail,StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ShowError("email already exist, choose another.");
+                                        return;
+                                    }
+                                    if (storedEmail == email)
+                                    {
+                                        ShowError("Email already exist, choose another.");
+                                        return;
+                                    }
+                                }
+                               
+                            }
                     }
 
-                    // If email is unique, insert new user into the database
-                    string passwordHash = HashPassword(passwordInput); // Implement a secure password hashing function
-                    string insertQuery = "INSERT INTO Users (name, email, password_hash, role) VALUES (@Name, @Email, @PasswordHash, @role)";
+
+                    // Implement a secure password hashing function
+                    string passwordHash = HashPassword(password);
+                    // Insert the new user into the database
+                    string insertQuery = "INSERT INTO Users (User_Name, Email, Password_hash, role) VALUES (@Name, @Email, @PasswordHash, @Role)";
 
                     using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
                     {
-                        insertCommand.Parameters.AddWithValue("@User_Name", nameInput);
-                        insertCommand.Parameters.AddWithValue("@Email", emailInput);
-                        insertCommand.Parameters.AddWithValue("@Password_hash", passwordHash);
-                        insertCommand.Parameters.AddWithValue("@role", roleInput);
-
-                        insertCommand.ExecuteNonQuery(); // Execute the query
+                        insertCommand.Parameters.AddWithValue("@Name", name);
+                        insertCommand.Parameters.AddWithValue("@Email", email);
+                        insertCommand.Parameters.AddWithValue("@PasswordHash", passwordHash);
+                        insertCommand.Parameters.AddWithValue("@Role", role);
+                        // Execute the command to insert the new user in the database
+                        insertCommand.ExecuteNonQuery();
                     }
 
                     // Successful sign-in, redirect to login or dashboard
@@ -72,20 +111,22 @@ namespace CldvPoePartOne
                 {
                     ShowError($"Database connection error: {ex.Message}");
                 }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
 
+        // method to create a pop up alert
         private void ShowError(string message)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('{message}');", true);
         }
-
+        // method to hash the password
         private string HashPassword(string password)
         {
-            // Implement a secure password hashing function
-            // For example, use bcrypt, PBKDF2, or similar
-            // This is a simple example and not secure in production
-            return password; // Just an example
+            return password; 
         }
     }
 }

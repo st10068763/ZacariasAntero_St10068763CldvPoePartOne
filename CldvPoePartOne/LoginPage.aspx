@@ -93,7 +93,7 @@
                 <h2>Login</h2>
                 <input type="text" runat="server" id="username" class="input-field" placeholder="Username or Email" />
                 <input type="password" runat="server" id="password" class="input-field" placeholder="Password" />
-                <button type="submit" class="login-button">Login</button>
+                <button runat="server" onserverclick="Login_Click">Login</button>
                 <div id="error-message" class="error-message">
                 </div>
                 <div class="signin-link">

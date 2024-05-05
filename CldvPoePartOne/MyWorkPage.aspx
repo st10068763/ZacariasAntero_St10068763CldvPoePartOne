@@ -40,7 +40,7 @@
             color: white;
             padding: 10px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
         }
         .craft-item .buy-button:hover {
@@ -61,6 +61,7 @@
     </style>
 </head>
 <body>
+    <!-- Top Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="#">KhumaloCraft</a>
@@ -77,6 +78,7 @@
             </div>
         </div>
     </nav>
+    <!-- End of Navigation bar -->
 
     <div class="container">
         <h2>Explore Our Craftwork</h2>
@@ -84,12 +86,13 @@
         <asp:Repeater ID="ProductRepeater" runat="server">
             <ItemTemplate>
                 <div class="craft-item">
-                    <img src='<%# Eval("Product_Image") %>' alt="Product image" class="img-fluid" />
+                    <img src='<%# Eval("Image_URL") %>' alt="Product image" class="img-fluid" />                  
                     <h2><%# Eval("Product_Name") %></h2>
                     <p><%# Eval("Product_Description") %></p>
+                    <p>Author: <%# Eval("Author") %></p>
                     <p>Price: R<%# Eval("Price") %></p>
                     <p>Stock: <%# Eval("Stock") %></p>
-                    <button type="button" class="buy-button" runat="server" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>'>Buy</button>
+                    <button type="button" class="buy-button" runat="server" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>'>Buy item</button>
                 </div>
             </ItemTemplate>
         </asp:Repeater>
@@ -108,6 +111,10 @@
             <div class="form-group">
                 <label for="ProductDescription">Product Description:</label>
                 <asp:TextBox ID="ProductDescription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
+            </div>
+            <div class="form-group">
+                <label for="ImageURL">Product Image URL:</label>
+                <asp:TextBox ID="ImageURLTB" runat="server" CssClass="form-control" />
             </div>
             <div class="form-group">
                 <label for="Price">Price:</label>

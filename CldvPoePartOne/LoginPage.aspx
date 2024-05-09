@@ -6,7 +6,7 @@
 <head runat="server">
     <title>Login - KhumaloCraft</title>
     <style>
-        /* Same styling as previous example */
+       
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
@@ -20,7 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #eaeaea;
+            background-color:dimgrey
         }
 
         .login-box {
@@ -59,7 +59,7 @@
             margin-top: 10px;
         }
         .auto-style1 {
-            background: white;
+            background: darkgray;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
@@ -93,11 +93,11 @@
                 <h2>Login</h2>
                 <input type="text" runat="server" id="username" class="input-field" placeholder="Username or Email" />
                 <input type="password" runat="server" id="password" class="input-field" placeholder="Password" />
-                <button runat="server" onserverclick="Login_Click">Login</button>
+                <button runat="server" class="login-button" onserverclick="Login_Click">Login</button>
                 <div id="error-message" class="error-message">
                 </div>
                 <div class="signin-link">
-                    Don't have an account? <a href="SigninPage.aspx">Sign In</a>
+                    Don't have an account? <a href="SigninPage.aspx">Create one now.</a>
                 </div>
             </div>
 

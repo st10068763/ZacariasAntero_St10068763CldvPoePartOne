@@ -52,25 +52,29 @@ namespace CldvPoePartOne
             }
         }
         //-------------------------------------ADD TO CART METHOD-------------------------------------//
-        // Method to handle the click event of the buy button to add the product to the cart
+        /// <summary>
+        /// Method to handle the click event of the buy button to add the product to the cart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void BuyButton_Click(object sender, EventArgs e)
         {
             // Get the button that was clicked
-            Button buyButton = (Button)sender;
-
+           Button buyButton = (Button)sender;
             if (int.TryParse(buyButton.CommandArgument, out int productId))
             {
                 // Add the product to the cart
                 AddToCart(productId);
                 // Redirect to the cart page
-                Response.Redirect($"TransactionPage.aspx?Product_ID={productId}");
+                Response.Redirect($"TransactionsPage.aspx?Product_ID={productId}");
             }
             else
             {
                 ShowError("Invalid product ID.");
             }
         }
-        
+
+        // Method to add the product to the cart
         private void AddToCart(int productId)
         {
             // Get the user ID from the session
@@ -84,7 +88,7 @@ namespace CldvPoePartOne
                 {
                     connection.Open();
                     // Check if the product is already in the cart
-                    string checkQuery = "SELECT * FROM Cart WHERE User_ID = @userId AND Product_ID = @productId";
+                    string checkQuery = "SELECT * FROM Transactions WHERE User_ID = @userId AND Product_ID = @productId";
                     using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {
                         checkCommand.Parameters.AddWithValue("@userId", userId);
@@ -100,7 +104,7 @@ namespace CldvPoePartOne
                         }
                     }// end of product check
 
-                    // Add the product to the cart
+                    // Add the product to the cart/ to the transactions table
                     string query = "INSERT INTO Transactions (User_ID, Product_ID, Quantity, transaction_date) VALUES (@userId, @productId, @Quantity, @transaction_date)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -136,11 +140,11 @@ namespace CldvPoePartOne
             string imageUrl = ImageURLTB.Text;
            
             // Insert the product into the database
-            InsertProduct(productName, productDescription, price, stock, productAuthor, imageUrl);
+            InsertNewProduct(productName, productDescription, price, stock, productAuthor, imageUrl);
         }
 
         // Method to insert the product into the database using the values from the form
-        private void InsertProduct(string productName, string productDescription, float price, int stock, string productAuthor, string imageUrl)
+        private void InsertNewProduct(string productName, string productDescription, float price, int stock, string productAuthor, string imageUrl)
         {
             // Connect to the database
             string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
@@ -182,7 +186,6 @@ namespace CldvPoePartOne
                 }
             }
         }
-
         // Method to display the error message
         private void ShowError(string message)
         {

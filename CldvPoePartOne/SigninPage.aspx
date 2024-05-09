@@ -9,7 +9,7 @@
         /* Basic styling for the sign-in page */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: darkseagreen;
             margin: 0;
             padding: 0;
         }
@@ -20,11 +20,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #eaeaea;
+            background-color: dimgrey;
         }
 
         .signin-box {
-            background: white;
+            background: Grey;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
@@ -45,7 +45,7 @@
         }
 
         .signin-button {
-            background-color: #4CAF50;
+            background-color: black;
             color: white;
             padding: 10px 20px;
             border: none;

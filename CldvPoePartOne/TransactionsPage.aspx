@@ -55,7 +55,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <asp:Repeater ID="TransactionsRepeater" runat="server">
+        <asp:Repeater ID="TransactionsRepeater" runat="server" OnItemCommand="TransactionsRepeater_ItemCommand">
             <ItemTemplate>
                 <div class="container">
                     <h2>Your Transactions</h2>
@@ -69,6 +69,8 @@
                         <!-- Quantity selector -->
                         <div class="quantity-selector">
                             <label for="quantity">Quantity:</label>
+
+
                             <button type="button" class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
                             <asp:TextBox ID="QuantityInput" runat="server" CssClass="quantity-input" Text="1" />
                             <button type="button" class="btn btn-secondary" onclick="increaseQuantity()">+</button>
@@ -87,11 +89,13 @@
     <div class="container">
         <h2>Your Transactions</h2>
         <!-- Display the selected product information -->
-        <div class="transaction-item">
+        <div class="transaction-item"> 
+            <!-- display selected product information -->
+            
             <img src="<%# ProductImage %>" alt="Product Image" class="img-fluid" />
             <h2><%# ProductName %></h2>
             <p>Author: <%# ProductAuthor %></p>
-            <p>Price per item: R<%# ProductPrice %></p>
+            <p>Price: R<%# ProductPrice %></p>
 
             <!-- Quantity selector -->
             <div class="quantity-selector">
@@ -112,8 +116,8 @@
 
     <script>
         function decreaseQuantity() {
-            var quantityInput = document.getElementById('<%# QuantityInput.ClientID %>');
-            var currentValue = parseInt(quantityInput.value);
+            var quantityInput = document.getElementById('<%# QuantityInput.ClientID %>');  // ClientID required
+            var currentValue = parseInt(quantityInput.value, 10);
 
             if (currentValue > 1) {
                 currentValue--;
@@ -123,7 +127,7 @@
 
         function increaseQuantity() {
             var quantityInput = document.getElementById('<%# QuantityInput.ClientID %>');
-            var currentValue = parseInt(quantityInput.value);
+            var currentValue = parseInt(quantityInput.value, 10);
 
             currentValue++;
             quantityInput.value = currentValue;

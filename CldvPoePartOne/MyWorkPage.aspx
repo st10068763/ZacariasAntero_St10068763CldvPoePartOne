@@ -82,24 +82,26 @@
 
     <div class="container">
         <h2>Explore Our Craftwork</h2>
-        <!-- Display product details dynamically -->
-        <asp:Repeater ID="ProductRepeater" runat="server">
-            <ItemTemplate>
-                <div class="craft-item">
-                    <img src='<%# Eval("Image_URL") %>' alt="Product image" class="img-fluid" />                  
-                    <h2><%# Eval("Product_Name") %></h2>
-                    <p><%# Eval("Product_Description") %></p>
-                    <p>Author: <%# Eval("Author") %></p>
-                    <p>Price: R<%# Eval("Price") %></p>
-                    <p>Stock: <%# Eval("Stock") %></p>
-                    <button type="button" class="buy-button" runat="server" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>'>Buy item</button>
-                </div>
-            </ItemTemplate>
-        </asp:Repeater>
-
         <!-- Form to insert new products into the database -->
-        <h3>Add New Product</h3>
+      
         <form runat="server">
+
+            <asp:Repeater ID="ProductRepeater" runat="server">
+    <ItemTemplate>
+        <div class="craft-item">
+            <img src='<%# Eval("Image_URL") %>' alt="Product image" class="img-fluid" />                  
+            <h2><%# Eval("Product_Name") %></h2>
+            <p><%# Eval("Product_Description") %></p>
+            <p>Author: <%# Eval("Author") %></p>
+            <p>Price: R<%# Eval("Price") %></p>
+            <p>Stock: <%# Eval("Stock") %></p>                   
+            <asp:Button ID="BuyButton" runat="server" Text="Buy" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>' />
+        </div>
+    </ItemTemplate>
+</asp:Repeater>
+
+              <h3>Add New Product</h3>
+
             <div class="form-group">
                 <label for="ProductName">Product Name:</label>
                 <asp:TextBox ID="ProductName" runat="server" CssClass="form-control" />

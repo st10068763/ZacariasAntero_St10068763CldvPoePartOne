@@ -6,7 +6,7 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> - My ASP.NET Application</title>
+    <title><%: Page.Title %> KhumalosCraft Application</title>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
@@ -44,6 +44,7 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/">Home</a></li>
@@ -51,7 +52,7 @@
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contact</a></li>
                          <li class="nav-item"><a class="nav-link" runat="server" href="~/MyWorkPage">My Work</a></li>
                          <li class="nav-item"><a class="nav-link" runat="server" href="~/LoginPage">Login user</a></li>
-                         <li class="nav-item"><a class="nav-link" runat="server" href="~/SigninPage">Create a new account</a></li>
+                         <li class="nav-item"><a class="nav-link" runat="server" href="~/SigninPage">Sign-in</a></li>
                          <li class="nav-item"><a class="nav-link" runat="server" href="~/TransactionsPge"> Cart</a></li>
                     </ul>
                 </div>

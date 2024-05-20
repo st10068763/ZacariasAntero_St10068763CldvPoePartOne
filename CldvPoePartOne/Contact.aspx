@@ -1,6 +1,12 @@
 ﻿<%@ Page Title="Contact" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Contact.aspx.cs" Inherits="CldvPoePartOne.Contact" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
+
     <div class="container" style="background-color:#1c1c1c; color: #f5f5f5;">  <!-- Darker background with light text -->
         <div class="row">
             <div class="col-md-8 mx-auto">
@@ -21,4 +27,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
 </asp:Content>

@@ -1,75 +1,107 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SigninPage.aspx.cs" Inherits="CldvPoePartOne.SigninPage" %>
 
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Sign In - KhumaloCraft</title>
-    <style>
-        /* Basic styling for the sign-in page */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: darkseagreen;
-            margin: 0;
-            padding: 0;
-        }
 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
+
+    <style>
+        body {
+             font-family: 'Arial', sans-serif;
+             background-color: #f8f9fa;
+             padding-top: 20px;
+        }
         .container {
-            width: 100%;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: dimgrey;
         }
-
-        .signin-box {
-            background: Grey;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+        .signin-box {           
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); /* Modern shadow for visibility */
             text-align: center;
-            width: 350px;
+            width: 100%;
+            max-width: 450px;
         }
-
         .signin-box h2 {
             margin-bottom: 20px;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .signin-button {
-            background-color: black;
+            font-size: 24px;
+            font-weight: bold;
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .signin-button:hover {
-            background-color: #45a049;
-        }
-
-        .role-select {
-            width: 100%;
+           
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 10px;
+            display: inline-block;
         }
-
+        .input-field {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent input background */
+        }
+        .signin-button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .signin-button:hover {
+            background-color: #0056b3;
+        }
+        .role-select {
+            height: 45px;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            background-color:black); /* Semi-transparent select background */
+        }
         .error-message {
             color: red;
             font-weight: bold;
             margin-top: 10px;
         }
     </style>
+</head>
+<body>
+    <form id="form1" runat="server" onsubmit="return validateForm()">
+        <div class="container">
+            <div class="signin-box">
+                <h2>Sign In</h2>
+                <!-- Form fields -->
+                <input type="text" runat="server" id="name" class="input-field form-control" placeholder="Enter user name" />
+                <input type="email" runat="server" id="email" class="input-field form-control" placeholder="Enter user email" />
+                <input type="password" runat="server" id="password" class="input-field form-control" placeholder="Enter user password" />
+                <!-- Role selection -->
+                <label for="role" class="sr-only">Select role</label>
+                <select id="role" runat="server" class="role-select form-control">
+                    <option value="">Select Role</option>
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                </select>
+                <!-- Sign in button -->
+                <button type="submit" runat="server" onserverclick="Signin_Click" class="signin-button btn btn-primary btn-block mt-4">Create Account</button>
+                
+                <div id="error-message" class="error-message mt-3"></div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
 
     <script>
         function validateForm() {
@@ -91,28 +123,5 @@
             return true; // Allow form submission
         }
     </script>
-</head>
-<body>
-    <form id="form1" runat="server" onsubmit="return validateForm()">
-        <div class="container">
-            <div class="signin-box">
-                <h2>Sign In</h2>
-                <!-- Form fields -->
-                <input type="text" runat="server" id="name" class="input-field" placeholder="Name" />
-                <input type="email" runat="server" id="email" class="input-field" placeholder="Email" />
-                <input type="password" runat="server" id="password" class="input-field" placeholder="Password" />
-                <!-- Role selection -->
-                <select id="role" runat="server" class="role-select">
-                    <option value="">Select Role</option>
-                    <option value="buyer">Buyer</option>
-                    <option value="seller">Seller</option>
-                </select>
-                <!-- sign in  button -->
-                <button type="submit" runat="server" onserverclick="Signin_Click" class="signin-button">Sign In</button>
-                
-                <div id="error-message" class="error-message"></div>
-            </div>
-        </div>
-    </form>
 </body>
 </html>

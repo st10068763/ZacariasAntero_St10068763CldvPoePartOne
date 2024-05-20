@@ -49,7 +49,7 @@ namespace CldvPoePartOne
         private void InsertUser(string name, string email, string password, string role)
         {
             // connection string 
-            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
             // Create a connection to the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

@@ -5,104 +5,85 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Login - KhumaloCraft</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
+   
     <style>
-       
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
+            background-color: #343a40; /* Dark background for contrast */
         }
-
         .container {
-            width: 100%;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color:dimgrey
         }
-
         .login-box {
-            background: white;
+            background-color: #ffffff; /* White background for the login box */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3); /* Increased shadow for visibility */
             text-align: center;
-            width: 300px;
-        }
-
-        .input-field {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            max-width: 400px;
         }
-
-        .login-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .login-box h2 {
+            color: #007bff; /* Bootstrap primary color for the heading */
         }
-
-        .login-button:hover {
-            background-color: #45a049;
+        .form-control {
+            border: 2px solid #007bff; /* Border color to match Bootstrap primary color */
+            color: #000000; /* Set text color to black for visibility */
         }
-
+        .form-control::placeholder {
+            color: #6c757d; /* Bootstrap secondary color for placeholders */
+        }
+        .btn-success {
+            background-color: #28a745; /* Bootstrap success color for the button */
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838; /* Darker shade on hover */
+            border-color: #1e7e34;
+        }
         .error-message {
             color: red;
             font-weight: bold;
             margin-top: 10px;
         }
-        .auto-style1 {
-            background: darkgray;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 344px;
-            height: 343px;
+        .signin-link a {
+            color: #007bff; /* Bootstrap primary color for the link */
+        }
+        .signin-link a:hover {
+            color: #0056b3; /* Darker shade on hover */
         }
     </style>
-
-    <!-- Include client-side validation script -->
-    <script>
-        function validateForm() {
-            const usernameField = document.getElementById("username");
-            const passwordField = document.getElementById("password");
-            const errorMessage = document.getElementById("error-message");
-
-            if (usernameField.value.trim() === "" || passwordField.value.trim() === "") {
-                errorMessage.innerText = "Username and password are required.";
-                return false; // Prevent form submission
-            }
-
-            errorMessage.innerText = ""; // Clear any previous errors
-            return true; // Allow form submission
-        }
-    </script>
 </head>
 <body>
     <form id="form1" runat="server" onsubmit="return validateForm()">
         <div class="container">
-            <div class="auto-style1">
+            <div class="login-box">
                 <h2>Login</h2>
-                <input type="text" runat="server" id="username" class="input-field" placeholder="Username or Email" />
-                <input type="password" runat="server" id="password" class="input-field" placeholder="Password" />
-                <button runat="server" class="login-button" onserverclick="Login_Click">Login</button>
-                <div id="error-message" class="error-message">
-                </div>
-                <div class="signin-link">
-                    Don't have an account? <a href="SigninPage.aspx">Create one now.</a>
+                <input type="text" runat="server" id="usernameTB" class="form-control mb-3" placeholder="Username or Email" />
+                <input type="password" runat="server" id="passwordTB" class="form-control mb-3" placeholder="Password" />
+
+               <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-primary btn-block" Text="Login" OnClick="btnLogin_Click" />
+                <div id="error-message" class="error-message"></div>
+
+                <div class="signin-link mt-3" fontcolor="black">
+                 Don't have an account? <a href="SigninPage.aspx">Create one now.</a>
                 </div>
             </div>
-
         </div>
-
     </form>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

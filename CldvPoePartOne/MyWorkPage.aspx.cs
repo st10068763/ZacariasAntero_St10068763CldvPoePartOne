@@ -22,14 +22,14 @@ namespace CldvPoePartOne
         // Method to load the products from the database
         private void LoadProducts()
         {
-            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    string query = "SELECT Product_ID, Product_Name, Product_Description, Price, Stock, Image_URL, Author FROM Products";
+                    string query = "SELECT Product_ID, Product_Name, Product_Description, Price, Stock, Product_Image, Author FROM Products";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -74,13 +74,14 @@ namespace CldvPoePartOne
             }
         }
 
+        
         // Method to add the product to the cart
         private void AddToCart(int productId)
         {
             // Get the user ID from the session
             int userId = (int)Session["UserId"];
             // Connect to the database
-            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -127,27 +128,41 @@ namespace CldvPoePartOne
                 }
             }
         }
-
-        // Method to insert new product into the database
-        protected void AddProduct_Click(object sender, EventArgs e)
+        //------------------------------------INSERT PRODUCT----------------------------------------//
+        /// <summary>
+        /// method to handle the click event of the add product button to add the product to the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void btnAddProduct_Click(object sender, EventArgs e)
         {
+            //// Get the user role from the session
+            //string role = (string)Session["Role"];
+            //// Check if the user is a seller
+            //if (role != "seller")
+            //{
+            //    ShowError("You do not have permission to add products. Only sellers can add products");
+            //    return;
+            //}
+
             // Get the values from the form
             string productName = ProductName.Text;
             string productDescription = ProductDescription.Text;
             string productAuthor = ProductAuthorTB.Text;
             float price = float.Parse(Price.Text);
             int stock = int.Parse(Stock.Text);
-            string imageUrl = ImageURLTB.Text;
-           
+            string productImage = ImageURLTB.Text;
+
             // Insert the product into the database
-            InsertNewProduct(productName, productDescription, price, stock, productAuthor, imageUrl);
+            InsertNewProduct(productName, productDescription, price, stock, productAuthor, productImage);
         }
+       //===========================================================================================//
 
         // Method to insert the product into the database using the values from the form
-        private void InsertNewProduct(string productName, string productDescription, float price, int stock, string productAuthor, string imageUrl)
+        private void InsertNewProduct(string productName, string productDescription, float price, int stock, string productAuthor, string productImage)
         {
             // Connect to the database
-            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -155,7 +170,7 @@ namespace CldvPoePartOne
                 {
                     connection.Open();
                     // Insert the new product into the database
-                    string query = "INSERT INTO Products (Product_Name, Product_Description, Price, Stock, Author, Image_URL) VALUES (@productName, @productDescription, @price, @stock, @productAuthor, @imageUrl)";
+                    string query = "INSERT INTO Products (Product_Name, Product_Description, Price, Stock, Author, Product_Image) VALUES (@productName, @productDescription, @price, @stock, @productAuthor, @productImage)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@productName", productName);
@@ -163,7 +178,7 @@ namespace CldvPoePartOne
                         command.Parameters.AddWithValue("@price", price);
                         command.Parameters.AddWithValue("@stock", stock);
                         command.Parameters.AddWithValue("@productAuthor", productAuthor);
-                        command.Parameters.AddWithValue("@imageUrl", imageUrl);
+                        command.Parameters.AddWithValue("@productImage", productImage);
                         // Execute the query to insert the new product
                         command.ExecuteNonQuery();
                     }
@@ -186,6 +201,7 @@ namespace CldvPoePartOne
                 }
             }
         }
+        //----------------------------------------------------------//
         // Method to display the error message
         private void ShowError(string message)
         {
@@ -198,5 +214,6 @@ namespace CldvPoePartOne
             // Display the success message
             ClientScript.RegisterStartupScript(this.GetType(), "MyAlert", "alert('" + message + "');", true);
         }
+        
     }
 }

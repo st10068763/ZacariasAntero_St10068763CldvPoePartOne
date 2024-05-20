@@ -5,7 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>My Crafts - KhumaloCraft</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+   
+    <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -89,7 +94,7 @@
             <asp:Repeater ID="ProductRepeater" runat="server">
     <ItemTemplate>
         <div class="craft-item">
-            <img src='<%# Eval("Image_URL") %>' alt="Product image" class="img-fluid" />                  
+            <img src='<%# Eval("Product_Image") %>' alt="Product image" class="img-fluid" />                  
             <h2><%# Eval("Product_Name") %></h2>
             <p><%# Eval("Product_Description") %></p>
             <p>Author: <%# Eval("Author") %></p>
@@ -108,15 +113,15 @@
             </div>
             <div class="form-group">
                  <label for="ProductAuthor">Product Author:</label>
-                 <asp:TextBox ID="ProductAuthorTB" runat="server" CssClass="form-control" />
+                 <asp:TextBox ID="ProductAuthorTB" runat="server" CssClass="form-control" placeholder="Enter the name of the author here" />
             </div>
             <div class="form-group">
                 <label for="ProductDescription">Product Description:</label>
-                <asp:TextBox ID="ProductDescription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
+                <asp:TextBox ID="ProductDescription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="2" placeholder="Enter your product description" />
             </div>
             <div class="form-group">
                 <label for="ImageURL">Product Image URL:</label>
-                <asp:TextBox ID="ImageURLTB" runat="server" CssClass="form-control" />
+                <asp:TextBox ID="ImageURLTB" runat="server" CssClass="form-control" placeholder="Enter the URL link of your image here" />
             </div>
             <div class="form-group">
                 <label for="Price">Price:</label>
@@ -126,13 +131,14 @@
                 <label for="Stock">Stock:</label>
                 <asp:TextBox ID="Stock" runat="server" CssClass="auto-style1" Width="308px" />
             </div>
-            <button type="button" runat="server" onserverclick="AddProduct_Click" class="btn btn-success">Add Product</button>
+            
+            <asp:Button ID="btnAddProduct" runat="server" CssClass="btn btn-primary btn-block" Text="Add Product" OnClick="btnAddProduct_Click" />
         </form>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+     <!-- Bootstrap JS and dependencies -->
+ <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

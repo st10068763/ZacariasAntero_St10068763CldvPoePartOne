@@ -61,7 +61,7 @@ namespace CldvPoePartOne
         private List<Product> GetDataForRepeater()
         {
             List<Product> products = new List<Product>();
-            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -109,7 +109,7 @@ namespace CldvPoePartOne
             if (!string.IsNullOrWhiteSpace(productId))
             {
                 // connection string
-                string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+                string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
                 // using using statement to ensure the connection is closed after the operation is done
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -127,7 +127,7 @@ namespace CldvPoePartOne
                             if (reader.HasRows)
                             {
                                 reader.Read();
-                                ProductImage = reader["Image_URL"].ToString();
+                                ProductImage = reader["Product_Image"].ToString();
                                 ProductName = reader["Product_Name"].ToString();
                                 ProductDescription = reader["Product_Description"].ToString();
                                 ProductPrice = float.Parse(reader["Price"].ToString());
@@ -205,7 +205,7 @@ namespace CldvPoePartOne
         private void ProcessTransaction(int userId, int productId, int quantity, float totalPrice, DateTime transaction_date)
         {
             // Connect to the database
-            string connectionString = "Data Source=sqlserverkhumaloscrafs.database.windows.net;Initial Catalog=khumaloCraftsDB;Persist Security Info=True;User ID=st10068763Zacarias;Password=MyVC@007;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

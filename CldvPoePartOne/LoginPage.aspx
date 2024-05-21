@@ -76,7 +76,7 @@
                 <div id="error-message" class="error-message"></div>
 
                 <div class="signin-link mt-3" fontcolor="black">
-                 Don't have an account? <a href="SigninPage.aspx">Create one now.</a>
+                 <a href="SigninPage.aspx"> Don't have an account? Create one now.</a>
                 </div>
             </div>
         </div>

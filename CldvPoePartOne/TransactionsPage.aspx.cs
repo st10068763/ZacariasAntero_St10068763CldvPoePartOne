@@ -113,29 +113,41 @@ namespace CldvPoePartOne
                 // using using statement to ensure the connection is closed after the operation is done
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    // Open the connection
-                    connection.Open();
-                    // Query to fetch the product details where the product ID matches the one in the query string
-                    string query = "SELECT * FROM Products WHERE Product_ID = @Product_ID";
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    try
                     {
-                        // Add the product ID as a parameter to the query
-                        command.Parameters.AddWithValue("@Product_ID", productId);
-
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        // Open the connection
+                        connection.Open();
+                        // Query to fetch the product details where the product ID matches the one in the query string
+                        string query = "SELECT * FROM Products WHERE Product_ID = @Product_ID";
+                        using (SqlCommand command = new SqlCommand(query, connection))
                         {
-                            if (reader.HasRows)
+                            // Add the product ID as a parameter to the query
+                            command.Parameters.AddWithValue("@Product_ID", productId);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                reader.Read();
-                                ProductImage = reader["Product_Image"].ToString();
-                                ProductName = reader["Product_Name"].ToString();
-                                ProductDescription = reader["Product_Description"].ToString();
-                                ProductPrice = float.Parse(reader["Price"].ToString());
-                                ProductStock = reader["Stock"].ToString();
-                                ProductAuthor = reader["Author"].ToString();
-                            }                           
-                        }                       
+                                if (reader.HasRows)
+                                {
+                                    reader.Read();
+                                    ProductImage = reader["Product_Image"].ToString();
+                                    ProductName = reader["Product_Name"].ToString();
+                                    ProductDescription = reader["Product_Description"].ToString();
+                                    ProductPrice = float.Parse(reader["Price"].ToString());
+                                    ProductStock = reader["Stock"].ToString();
+                                    ProductAuthor = reader["Author"].ToString();
+                                }
+                                else
+                                {
+                                    ShowError("Product not found.");
+                                }
+                            }
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        ShowError("Error fetching product details: " + ex.Message);                         
+                    }
+                    
                 }
             }
             else
@@ -156,16 +168,17 @@ namespace CldvPoePartOne
             {
                 var product = (Product)e.Item.DataItem;
 
-                var productNameLabel = (Label)e.Item.FindControl("ProductNameLabel");
-                if (productNameLabel != null)
-                    productNameLabel.Text = product.Product_Name;
+                //var productNameLabel = (Label)e.Item.FindControl("ProductNameLabel");
+                //if (productNameLabel != null)
+                //    productNameLabel.Text = product.Product_Name;
+
                 // Find the label control in the repeater
-                Label ProductNameLabel = (Label)e.Item.FindControl("ProductNameLabel");
-                Label ProductDescriptionLabel = (Label)e.Item.FindControl("ProductDescriptionLabel");
-                Label ProductPriceLabel = (Label)e.Item.FindControl("ProductPriceLabel");
-                Label ProductStockLabel = (Label)e.Item.FindControl("ProductStockLabel");
-                Label ProductAuthorLabel = (Label)e.Item.FindControl("ProductAuthorLabel");
-                Image ProductImageLabel = (Image)e.Item.FindControl("ProductImageLabel");
+                var ProductNameLabel = (Label)e.Item.FindControl("ProductNameLabel");
+                var ProductDescriptionLabel = (Label)e.Item.FindControl("ProductDescriptionLabel");
+                var ProductPriceLabel = (Label)e.Item.FindControl("ProductPriceLabel");
+                var ProductStockLabel = (Label)e.Item.FindControl("ProductStockLabel");
+                var ProductAuthorLabel = (Label)e.Item.FindControl("ProductAuthorLabel");
+                var ProductImageLabel = (Image)e.Item.FindControl("ProductImageLabel");
 
                 // Assign the product details to the label controls
                 ProductNameLabel.Text = ProductName;

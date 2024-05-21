@@ -49,7 +49,7 @@
             cursor: pointer;
         }
         .craft-item .buy-button:hover {
-            background-color: #218838;
+            
         }
         .auto-style1 {
             display: block;
@@ -100,7 +100,7 @@
             <p>Author: <%# Eval("Author") %></p>
             <p>Price: R<%# Eval("Price") %></p>
             <p>Stock: <%# Eval("Stock") %></p>                   
-            <asp:Button ID="BuyButton" runat="server" Text="Buy" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>' />
+            <asp:Button ID="BuyButton" runat="server" Text="Buy" CssClass="btn btn-primary" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>' />
         </div>
     </ItemTemplate>
 </asp:Repeater>
@@ -109,7 +109,7 @@
 
             <div class="form-group">
                 <label for="ProductName">Product Name:</label>
-                <asp:TextBox ID="ProductName" runat="server" CssClass="form-control" />
+                <asp:TextBox ID="ProductName" runat="server" CssClass="form-control" placeholder="Enter the product name" />
             </div>
             <div class="form-group">
                  <label for="ProductAuthor">Product Author:</label>

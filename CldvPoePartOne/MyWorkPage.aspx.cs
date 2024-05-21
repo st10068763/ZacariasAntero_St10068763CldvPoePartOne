@@ -73,6 +73,7 @@ namespace CldvPoePartOne
                 ShowError("Invalid product ID.");
             }
         }
+       
 
         
         // Method to add the product to the cart
@@ -136,14 +137,18 @@ namespace CldvPoePartOne
         /// <param name="e"></param>
         protected void btnAddProduct_Click(object sender, EventArgs e)
         {
-            //// Get the user role from the session
-            //string role = (string)Session["Role"];
-            //// Check if the user is a seller
-            //if (role != "seller")
-            //{
-            //    ShowError("You do not have permission to add products. Only sellers can add products");
-            //    return;
-            //}
+            // Get the user role from the session
+            string role = (string)Session["Role"];
+            // Check if the user is a seller
+            if (role != "seller")
+            {
+                ShowError("You do not have permission to add products. Only sellers can add products");
+                return;
+            }
+            else
+            {
+
+            }
 
             // Get the values from the form
             string productName = ProductName.Text;

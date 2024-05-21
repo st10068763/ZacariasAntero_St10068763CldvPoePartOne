@@ -93,6 +93,9 @@
                 </select>
                 <!-- Sign in button -->
                 <button type="submit" runat="server" onserverclick="Signin_Click" class="signin-button btn btn-primary btn-block mt-4">Create Account</button>
+
+                <!-- link to the login page -->
+                <a href="LoginPage.aspx" class="btn btn-link mt-3">Already have an account? Login</a>
                 
                 <div id="error-message" class="error-message mt-3"></div>
             </div>

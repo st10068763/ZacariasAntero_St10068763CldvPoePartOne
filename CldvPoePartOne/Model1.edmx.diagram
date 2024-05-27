@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bd694ad88ec2485699f9534836c1b3d6" Name="Diagram1" ZoomLevel="115">
+        <EntityTypeShape EntityType="khumaloDatabaseModel.Product" Width="1.5" PointX="3.25" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="khumaloDatabaseModel.Transaction" Width="1.5" PointX="7.875" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="khumaloDatabaseModel.User" Width="1.5" PointX="5.5" PointY="15" IsExpanded="true" />
+        <AssociationConnector Association="khumaloDatabaseModel.FK__Transacti__Produ__47A6A41B" ManuallyRouted="false" />
+        <AssociationConnector Association="khumaloDatabaseModel.FK__Transacti__User___46B27FE2" ManuallyRouted="false" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

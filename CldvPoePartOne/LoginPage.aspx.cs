@@ -8,7 +8,7 @@ namespace CldvPoePartOne
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         // Function to show error messages in the frontend
@@ -21,7 +21,7 @@ namespace CldvPoePartOne
         private bool VerifyPassword(string inputPassword, string storedHash)
         {
             // Example implementation of password verification. Adjust as needed.
-            return inputPassword == storedHash; 
+            return inputPassword == storedHash;
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -34,7 +34,7 @@ namespace CldvPoePartOne
             if (string.IsNullOrWhiteSpace(usernameInput) || string.IsNullOrWhiteSpace(passwordInput))
             {
                 ShowError("Username and password are required.");
-                return; // Exit early
+                return;
             }
 
             // Connect to SQL Server database
@@ -46,45 +46,47 @@ namespace CldvPoePartOne
                 {
                     // Open the connection
                     connection.Open();
-                    // Query to retrieve user ID and password 
-                    string query = "SELECT User_ID, Password_hash FROM Users WHERE (User_Name = @username OR Email = @username)";
+                    // Query to retrieve user ID, password, and role
+                    string query = "SELECT User_ID, Password_hash, Role FROM Users WHERE (User_Name = @username OR Email = @username)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@username", usernameInput);
                         // Execute the query and read the results
                         using (SqlDataReader reader = command.ExecuteReader())
-                            // check is the user exists in the database
+                        {
+                            // Check if the user exists in the database
                             if (reader.HasRows)
                             {
-                                reader.Read(); // Read the first row
-
+                                reader.Read();
                                 int userId = (int)reader["User_ID"];
                                 string storedHash = reader["Password_hash"].ToString();
+                                string role = reader["Role"].ToString();
 
-                                if (passwordInput == storedHash)
+                                // Verify the password
+                                if (VerifyPassword(passwordInput, storedHash))
                                 {
                                     // Successful login, set session variable and redirect
                                     Session["UserId"] = userId;
+                                    Session["Role"] = role;
                                     // Redirect to the home page
                                     Response.Redirect("Default.aspx");
                                 }
                                 else
                                 {
-                                    ShowError("Incorrect password."); // Display error message
+                                    ShowError("Incorrect password.");
                                 }
                             }
-                            // displays a message if the user does not exist
                             else
                             {
                                 ShowError("Invalid username.");
                             }
+                        }
                     }
                 }
                 catch (SqlException ex)
                 {
                     ShowError($"Database connection error: {ex.Message}"); // Handle SQL exceptions
                 }
-
                 finally
                 {
                     connection.Close(); // Close the connection

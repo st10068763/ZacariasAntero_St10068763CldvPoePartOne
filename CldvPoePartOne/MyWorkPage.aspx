@@ -5,11 +5,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>My Crafts - KhumaloCraft</title>
-   
     <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
 
     <style>
         body {
@@ -49,7 +48,7 @@
             cursor: pointer;
         }
         .craft-item .buy-button:hover {
-            
+            background-color: #218838;
         }
         .auto-style1 {
             display: block;
@@ -87,33 +86,55 @@
 
     <div class="container">
         <h2>Explore Our Craftwork</h2>
-        <!-- Form to insert new products into the database -->
-      
-        <form runat="server">
 
+        <form id="mainForm" runat="server">
+        
+            <!-- Search form -->
+            <div class="form-group">
+                <label for="SearchTerm">Search by Product Name or Author:</label>
+                <asp:TextBox ID="SearchTermTB" runat="server" CssClass="form-control" placeholder="Enter product name or author" />
+            </div>
+            <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+
+             <!--Product table binds the data from the database -->
+             <div class="section mb-4">
+                 <h2>Search Result</h2>
+                 <asp:GridView ID="GridViewProducts" runat="server" AutoGenerateColumns="false" CssClass="table table-striped">
+                     <Columns>
+                         <asp:BoundField DataField="Product_Name" HeaderText="Product Name" />
+                         <asp:BoundField DataField="Product_Description" HeaderText="Description" />
+                         <asp:BoundField DataField="Price" HeaderText="Price" />
+                         <asp:BoundField DataField="stock" HeaderText="Stock available" />
+                         <asp:BoundField DataField="Author" HeaderText="Product Author" />
+                     </Columns>
+                 </asp:GridView>
+             </div>
+
+            <!-- Product listing -->
             <asp:Repeater ID="ProductRepeater" runat="server">
-    <ItemTemplate>
-        <div class="craft-item">
-            <img src='<%# Eval("Product_Image") %>' alt="Product image" class="img-fluid" />                  
-            <h2><%# Eval("Product_Name") %></h2>
-            <p><%# Eval("Product_Description") %></p>
-            <p>Author: <%# Eval("Author") %></p>
-            <p>Price: R<%# Eval("Price") %></p>
-            <p>Stock: <%# Eval("Stock") %></p>                   
-            <asp:Button ID="BuyButton" runat="server" Text="Buy" CssClass="btn btn-primary" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>' />
-        </div>
-    </ItemTemplate>
-</asp:Repeater>
+                <ItemTemplate>
+                    <div class="craft-item">
+                        <img src='<%# Eval("Product_Image") %>' alt="Product image" class="img-fluid" />                  
+                        <h2><%# Eval("Product_Name") %></h2>
+                        <p><%# Eval("Product_Description") %></p>
+                        <p>Author: <%# Eval("Author") %></p>
+                        <p>Price: R<%# Eval("Price") %></p>
+                        <p>Stock: <%# Eval("Stock") %></p>                   
+                        <asp:Button ID="BuyButton" runat="server" Text="Buy" CssClass="btn btn-primary" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>' />
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
 
-              <h3>Add New Product</h3>
+            <h3>Add New Product</h3>
 
+            <!-- Form to insert new products into the database -->
             <div class="form-group">
                 <label for="ProductName">Product Name:</label>
                 <asp:TextBox ID="ProductName" runat="server" CssClass="form-control" placeholder="Enter the product name" />
             </div>
             <div class="form-group">
-                 <label for="ProductAuthor">Product Author:</label>
-                 <asp:TextBox ID="ProductAuthorTB" runat="server" CssClass="form-control" placeholder="Enter the name of the author here" />
+                <label for="ProductAuthor">Product Author:</label>
+                <asp:TextBox ID="ProductAuthorTB" runat="server" CssClass="form-control" placeholder="Enter the name of the author here" />
             </div>
             <div class="form-group">
                 <label for="ProductDescription">Product Description:</label>
@@ -136,9 +157,8 @@
         </form>
     </div>
 
-     <!-- Bootstrap JS and dependencies -->
- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
-
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

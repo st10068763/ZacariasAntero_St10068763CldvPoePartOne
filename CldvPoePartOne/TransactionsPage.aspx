@@ -22,22 +22,26 @@
             margin: 0 auto;
             padding: 20px;
         }
-        .transaction-item {
+       .transaction-item {
             margin-bottom: 20px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #333; 
         }
+
         .transaction-item img {
             max-width: 100%;
             height: auto;
         }
+
         .quantity-selector {
             display: flex;
             align-items: center;
         }
+
         .quantity-input {
             width: 50px;
             text-align: center;
@@ -45,6 +49,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         .checkout-button {
             background-color: #28a745;
             color: white;
@@ -53,95 +58,73 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         .checkout-button:hover {
             background-color: #218838;
         }
+
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <asp:Repeater ID="TransactionsRepeater" runat="server" OnItemCommand="TransactionsRepeater_ItemCommand">
+        <asp:Repeater ID="ProductRepeater" runat="server" OnItemCommand="ProductRepeater_ItemCommand">
             <ItemTemplate>
                 <div class="container">
                     <h2>Your Transactions</h2>
-                    <!-- Display the selected product information -->
                     <div class="transaction-item">
-                        <img src="<%# Eval("ProductImage") %>" alt="Product Image" class="img-fluid" />
-                        <h2><%# Eval("ProductName") %></h2>
-                        <p>Author: <%# Eval("ProductAuthor") %></p>
-                       <p>Total Price: R<%# TotalPrice %></p>
-
-                        <!-- Quantity selector -->
+                        <img src='<%# Eval("Product_Image") %>' alt="Product Image" class="img-fluid" />
+                        <h2><%# Eval("Product_Name") %></h2>
+                        <p>Author: <%# Eval("Author") %></p>
+                        <p>Price: R<%# Eval("Price") %></p>
                         <div class="quantity-selector">
                             <label for="quantity">Quantity:</label>
-
-
-                            <button type="button" class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
+                            <button type="button" class="btn btn-secondary" onclick="decreaseQuantity(this)">-</button>
                             <asp:TextBox ID="QuantityInput" runat="server" CssClass="quantity-input" Text="1" />
-                            <button type="button" class="btn btn-secondary" onclick="increaseQuantity()">+</button>
+                            <button type="button" class="btn btn-secondary" onclick="increaseQuantity(this)">+</button>
                         </div>
-                        
-                        <!-- Total price -->
-                        
-                        
-                        <!-- Checkout button -->
-                        <button type="button" runat="server" onserverclick="CheckoutButton_Click" class="checkout-button">Checkout</button>
+                        <p>Total Price: R<asp:Label ID="TotalPriceLabel" runat="server" Text='<%# Eval("Price") %>' /></p>
+                        <asp:Button ID="CheckoutButton" runat="server" CommandName="Checkout" CommandArgument='<%# Eval("Product_ID") %>' Text="Checkout" CssClass="checkout-button" />
                     </div>
                 </div>
             </ItemTemplate>
         </asp:Repeater>
-
-    <div class="container">
-        <h2>Your Transactions</h2>
-        <!-- Display the selected product information -->
-        <div class="transaction-item"> 
-            <!-- display selected product information -->
-            
-            <img src="<%# ProductImage %>" alt="Product Image" class="img-fluid" />
-            <h2><%# ProductName %></h2>
-            <p>Author: <%# ProductAuthor %></p>
-            <p>Price: R<%# ProductPrice %></p>
-
-            <!-- Quantity selector -->
-            <div class="quantity-selector">
-                <label for="quantity">Quantity:</label>
-                <button type="button" class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
-                <asp:TextBox ID="QuantityInput" runat="server" CssClass="quantity-input" Text="1" />
-                <button type="button" class="btn btn-secondary" onclick="increaseQuantity()">+</button>
-            </div>
-            
-            <!-- Total price -->
-            <p>Total Price: R<%# ProductPrice * int.Parse(QuantityInput.Text) %></p>
-            
-            <!-- Checkout button -->
-            <button type="button" runat="server" onserverclick="CheckoutButton_Click" class="checkout-button">Checkout</button>
-        </div>
-    </div>
-       
+    </form>
 
     <script>
-        function decreaseQuantity() {
-            var quantityInput = document.getElementById('<%# QuantityInput.ClientID %>');  // ClientID required
+        function decreaseQuantity(button) {
+            var container = button.closest('.transaction-item');
+            var quantityInput = container.querySelector('.quantity-input');
             var currentValue = parseInt(quantityInput.value, 10);
 
             if (currentValue > 1) {
                 currentValue--;
                 quantityInput.value = currentValue;
             }
+            updateTotalPrice(container);
         }
 
-        function increaseQuantity() {
-            var quantityInput = document.getElementById('<%# QuantityInput.ClientID %>');
+        function increaseQuantity(button) {
+            var container = button.closest('.transaction-item');
+            var quantityInput = container.querySelector('.quantity-input');
             var currentValue = parseInt(quantityInput.value, 10);
 
             currentValue++;
             quantityInput.value = currentValue;
+            updateTotalPrice(container);
+        }
+
+        function updateTotalPrice(container) {
+            var quantityInput = container.querySelector('.quantity-input');
+            var totalPriceLabel = container.querySelector('.total-price-label');
+            var pricePerUnit = parseFloat(container.querySelector('.price-label').textContent.replace('R', ''));
+            var totalPrice = pricePerUnit * parseInt(quantityInput.value, 10);
+
+            totalPriceLabel.innerText = 'R' + totalPrice.toFixed(2);
         }
     </script>
-         </form>
 
-       <!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

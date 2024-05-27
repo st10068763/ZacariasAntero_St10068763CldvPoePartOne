@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -19,6 +21,33 @@ namespace CldvPoePartOne
                 LoadProducts();
             }
         }
+        //-----------------------------------------------------------------------------------------------//
+
+
+        private DataTable SearchProducts(string query)
+        {
+            var searchQuery = "%" + query + "%";
+            // connection string to connect to the database
+            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                // open the connection to the database
+                conn.Open();
+                string sqlQuery = "SELECT Product_Name, Product_Description, Price, Stock, Product_Image, Author FROM Products WHERE Product_Name LIKE @SearchQuery OR Product_Description LIKE @SearchQuery OR Author LIKE @SearchQuery";
+                using (SqlCommand command = new SqlCommand(sqlQuery, conn))
+                {
+                    command.Parameters.AddWithValue("@SearchQuery", searchQuery);
+                    // execute the query
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        DataTable products = new DataTable();
+                        adapter.Fill(products);
+                        return products;
+                    }
+                }
+            }
+        }
+
         // Method to load the products from the database
         private void LoadProducts()
         {
@@ -61,19 +90,21 @@ namespace CldvPoePartOne
         {
             // Get the button that was clicked
            Button buyButton = (Button)sender;
-            if (int.TryParse(buyButton.CommandArgument, out int productId))
-            {
-                // Add the product to the cart
-                AddToCart(productId);
-                // Redirect to the cart page
-                Response.Redirect($"TransactionsPage.aspx?Product_ID={productId}");
-            }
-            else
-            {
-                ShowError("Invalid product ID.");
-            }
-        }
-       
+            string productId = buyButton.CommandArgument;
+            Response.Redirect("TransactionsPage.aspx?ProductId=" + productId);
+          //  Response.Redirect($"TransactionsPage.aspx?Product_ID={productId}");
+            //if (int.TryParse(buyButton.CommandArgument, out int productId))
+            //{
+            //    // Add the product to the cart
+            //    AddToCart(productId);
+            //    // Redirect to the cart page
+            //    Response.Redirect($"TransactionsPage.aspx?Product_ID={productId}");
+            //}
+            //else
+            //{
+            //    ShowError("Invalid product ID.");
+            //}
+        } 
 
         
         // Method to add the product to the cart
@@ -145,11 +176,7 @@ namespace CldvPoePartOne
                 ShowError("You do not have permission to add products. Only sellers can add products");
                 return;
             }
-            else
-            {
-
-            }
-
+            
             // Get the values from the form
             string productName = ProductName.Text;
             string productDescription = ProductDescription.Text;
@@ -161,9 +188,16 @@ namespace CldvPoePartOne
             // Insert the product into the database
             InsertNewProduct(productName, productDescription, price, stock, productAuthor, productImage);
         }
-       //===========================================================================================//
-
-        // Method to insert the product into the database using the values from the form
+        //===========================================================================================//
+        /// <summary>
+        ///  Method to insert the product into the database using the values from the form
+        /// </summary>
+        /// <param name="productName"></param>
+        /// <param name="productDescription"></param>
+        /// <param name="price"></param>
+        /// <param name="stock"></param>
+        /// <param name="productAuthor"></param>
+        /// <param name="productImage"></param>
         private void InsertNewProduct(string productName, string productDescription, float price, int stock, string productAuthor, string productImage)
         {
             // Connect to the database
@@ -219,6 +253,15 @@ namespace CldvPoePartOne
             // Display the success message
             ClientScript.RegisterStartupScript(this.GetType(), "MyAlert", "alert('" + message + "');", true);
         }
-        
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            string query = SearchTermTB.Text;
+            SearchProducts(query);
+            // Perform search and bind results to GridViewProducts
+            DataTable products = SearchProducts(query);
+            GridViewProducts.DataSource = products;
+            GridViewProducts.DataBind();
+        }
     }
 }

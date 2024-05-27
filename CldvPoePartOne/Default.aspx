@@ -6,7 +6,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
 
-    <div class="container" style="background-color: #343a40; color: #f5f5f5; padding: 20px; border-radius: 10px; box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);">
+    <div class="container"  padding: 20px; border-radius: 10px; box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);">
         <div class="row">
             <div class="col-md-12">
                 <div class="jumbotron text-center" style="background-color: #333; color: #f5f5f5;">
@@ -23,7 +23,7 @@
         <!------------------------------------Explore craft---------------------------------->
         <div class="row">
             <div class="col-md-4">
-                <div class="card mb-4 shadow-sm" style="background-color: #2c2c2c; color: #f5f5f5;">
+                <div class="card mb-4 shadow-sm"  color: #f5f5f5;">
                     <div class="card-body">
                         <h2 class="card-title">Explore Craftwork</h2>
                         <p class="card-text">Browse our collection of handcrafted products from artisans worldwide.</p>
@@ -34,7 +34,7 @@
 
             <!------------------------------------About Us---------------------------------->
             <div class="col-md-4">
-                <div class="card mb-4 shadow-sm" style="background-color: #2c2c2c; color: #f5f5f5;">
+                <div class="card mb-4 shadow-sm" color: #f5f5f5;">
                     <div class="card-body">
                         <h2 class="card-title">About us</h2>
                         <p class="card-text">Learn more about KhumaloCraft Emporium and our mission.</p>
@@ -45,7 +45,7 @@
 
             <!------------------------------------Contact us---------------------------------->
             <div class="col-md-4">
-                <div class="card mb-4 shadow-sm" style="background-color: #2c2c2c; color: #f5f5f5;">
+                <div class="card mb-4 shadow-sm" color: #f5f5f5;">
                     <div class="card-body">
                         <h2 class="card-title">Contact us</h2>
                         <p class="card-text">Have questions or feedback? Reach out to us at any time!</p>

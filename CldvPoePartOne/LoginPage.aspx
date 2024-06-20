@@ -16,7 +16,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #343a40; /* Dark background for contrast */
+            background-color: #343a40; 
         }
         .container {
             height: 100vh;
@@ -25,30 +25,30 @@
             align-items: center;
         }
         .login-box {
-            background-color: #ffffff; /* White background for the login box */
+            background-color: #ffffff; 
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3); /* Increased shadow for visibility */
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
             text-align: center;
             width: 100%;
             max-width: 400px;
         }
         .login-box h2 {
-            color: #007bff; /* Bootstrap primary color for the heading */
+            color: #007bff; 
         }
         .form-control {
-            border: 2px solid #007bff; /* Border color to match Bootstrap primary color */
-            color: #000000; /* Set text color to black for visibility */
+            border: 2px solid #007bff; 
+            color: #000000;
         }
         .form-control::placeholder {
-            color: #6c757d; /* Bootstrap secondary color for placeholders */
+            color: #6c757d; 
         }
         .btn-success {
-            background-color: #28a745; /* Bootstrap success color for the button */
+            background-color: #28a745;
             border-color: #28a745;
         }
         .btn-success:hover {
-            background-color: #218838; /* Darker shade on hover */
+            background-color: #218838; 
             border-color: #1e7e34;
         }
         .error-message {
@@ -57,10 +57,10 @@
             margin-top: 10px;
         }
         .signin-link a {
-            color: #007bff; /* Bootstrap primary color for the link */
+            color: #007bff; 
         }
         .signin-link a:hover {
-            color: #0056b3; /* Darker shade on hover */
+            color: #0056b3;
         }
     </style>
 </head>

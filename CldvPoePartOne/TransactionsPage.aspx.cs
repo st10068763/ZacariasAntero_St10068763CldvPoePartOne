@@ -1,40 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.EnterpriseServices;
-using System.EnterpriseServices.CompensatingResourceManager;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static CldvPoePartOne.TransactionsPage;
 
 namespace CldvPoePartOne
 {
     public partial class TransactionsPage : System.Web.UI.Page
     {
-        /// <summary>
-        /// Product class to hold product details
-        /// </summary>
         public class Product
         {
-            public int Product_ID { get; set; }
-            public string Product_Name { get; set; }
-            public string Product_Description { get; set; }
-            public float Price { get; set; }
-            public int Stock { get; set; }
-            public string Author { get; set; }
-            public string Image_URL { get; set; }
+            public int ProductID { get; set; }
+            public string productName { get; set; }
+            public string productDescription { get; set; }
+            public decimal price { get; set; }
+            public int stock { get; set; }
+            public string productAuthor { get; set; }
+            public string productImage { get; set; }
         }
 
-        // Properties to hold the product details        
-        public string ProductStock;
-        public string ProductImage;
-        public string ProductName;
-        public string ProductDescription;
+        // gets the user id from the session
+        public int UserId => (int)Session["UserId"];
+
         public float ProductPrice;
-        public string ProductAuthor;
         public int Quantity = 1;
         public float TotalPrice;
 
@@ -42,9 +30,6 @@ namespace CldvPoePartOne
         {
             if (!IsPostBack)
             {
-                // Update the total price
-                UpdateTotalPrice();
-                              
                 string productId = Request.QueryString["ProductId"];
                 if (!string.IsNullOrEmpty(productId))
                 {
@@ -57,11 +42,7 @@ namespace CldvPoePartOne
                 GetDataForRepeater();
             }
         }
-        //--------------------------------------------------------------------------------------------------------//
-        /// <summary>
-        /// this will get the data from the database and populate the repeater
-        /// </summary>
-        /// <returns></returns>
+
         private List<Product> GetDataForRepeater()
         {
             List<Product> products = new List<Product>();
@@ -72,23 +53,22 @@ namespace CldvPoePartOne
                 try
                 {
                     connection.Open();
-                    string query = "SELECT * FROM Transactions";  
+                    string query = "SELECT * FROM Transactions";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                // Populate the list of products with data from the database
                                 Product product = new Product
                                 {
-                                    Product_ID = (int)reader["Product_ID"],
-                                    Product_Name = reader["Product_Name"].ToString(),
-                                    Product_Description = reader["Product_Description"].ToString(),
-                                    Price = float.Parse(reader["Price"].ToString()),
-                                    Stock = (int)reader["Stock"],
-                                    Author = reader["Author"].ToString(),
-                                    Image_URL = reader["Image_URL"].ToString()
+                                    ProductID = (int)reader["ProductID"],
+                                    productName = reader["productName"].ToString(),
+                                    productDescription = reader["productDescription"].ToString(),
+                                    price = (decimal)reader["price"],
+                                    stock = (int)reader["stock"],
+                                    productAuthor = reader["productAuthor"].ToString(),
+                                    productImage = reader["productImage"].ToString()
                                 };
                                 products.Add(product);
                             }
@@ -97,111 +77,116 @@ namespace CldvPoePartOne
                 }
                 catch (Exception ex)
                 {
-                    ShowError("Error fetching transactions: " + ex.Message); 
+                    ShowError("Error fetching transactions: " + ex.Message);
                 }
             }
-            // Return the populated list
-            return products;  
+            return products;
         }
 
-        //--------------------------------------------------------------------------------------------------------//
-        /// <summary>
-        /// Method to load the product details
-        /// </summary>
-        /// <param name="productId"></param>
         private void LoadProductDetails(string productId)
         {
-            // Check if the product ID is not null or empty, only if the product ID is valid the product details will be fetched
-            if (!string.IsNullOrWhiteSpace(productId))
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                // connection string
-                string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
-                // using using statement to ensure the connection is closed after the operation is done
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                try
                 {
-                    try
+                    connection.Open();
+                    string query = "SELECT ProductID, productName, productDescription, price, stock, productImage, productAuthor FROM ProductTB WHERE ProductID = @ProductId";
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Open the connection
-                        connection.Open();
-                        // Query to fetch the product details where the product ID matches the one in the query string
-                        string query = "SELECT Product_ID, Product_Name, Product_Description, Price, Stock, Product_Image, Author FROM Products WHERE Product_ID = @ProductId";
-                        using (SqlCommand command = new SqlCommand(query, connection))
+                        command.Parameters.AddWithValue("@ProductId", productId);
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            command.Parameters.AddWithValue("@ProductId", productId);
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            if (reader.HasRows)
                             {
-                                if (reader.HasRows)
+                                reader.Read();
+                                Product product = new Product
                                 {
-                                    ProductRepeater.DataSource = reader;
-                                    ProductRepeater.DataBind();
-                                }
-                                else
-                                {
-                                    ShowError("Product not found.");
-                                }
+                                    ProductID = (int)reader["ProductID"],
+                                    productName = reader["productName"].ToString(),
+                                    productDescription = reader["productDescription"].ToString(),
+                                    price = (decimal)reader["price"],
+                                    stock = (int)reader["stock"],
+                                    productAuthor = reader["productAuthor"].ToString(),
+                                    productImage = reader["productImage"].ToString()
+                                };
+                                ProductRepeater.DataSource = new List<Product> { product };
+                                ProductRepeater.DataBind();
+                            }
+                            else
+                            {
+                                ShowError("Product not found.");
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        ShowError("Error fetching product details: " + ex.Message);                         
-                    }
-                    
                 }
-            }           
+                catch (Exception ex)
+                {
+                    ShowError("Error fetching product details: " + ex.Message);
+                }
+            }
         }
-        //-----------------------------------------------------------------------------------------------//
-        /// <summary>
-        ///  checkout button click event handler
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void CheckoutButton_Click(object sender, EventArgs e)
+
+        protected void PayButton_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
             RepeaterItem item = (RepeaterItem)button.NamingContainer;
-            
-            // Get the product ID from the query string
-            string productId = Request.QueryString["Product_ID"];
-            // Get the user ID from the session
-            int userId = (int)Session["UserId"];
-            TextBox QuantityInput = (TextBox)item.FindControl("QuantityInput");
-            // Get the quantity the user selects to buy
-            int quantity = int.Parse(QuantityInput.Text);
-            // get the transaction date
-            DateTime Transaction_date = DateTime.Now;
-            // Load product details
-            LoadProductDetails(productId);
-            // Calculate the total price for the number of items selected by the user
-            float totalPrice = ProductPrice * quantity;
 
+            TextBox quantityTextBox = (TextBox)item.FindControl("QuantityTB");
+            int quantity = int.Parse(quantityTextBox.Text);
 
-            // Ensure product details are available
-            if (!string.IsNullOrEmpty(ProductName) && !string.IsNullOrEmpty(ProductAuthor))
+            Label totalPriceLabel = (Label)item.FindControl("TotalPriceLabel");
+            float totalPrice = float.Parse(totalPriceLabel.Text.Replace("R", ""));
+
+            TextBox shippingAddressTB = (TextBox)item.FindControl("shippingAddressTB");
+            DropDownList paymentMethodDDL = (DropDownList)item.FindControl("PaymentMethodDDL");
+            TextBox cardNumberTB = (TextBox)item.FindControl("CardNumberTB");
+            TextBox expiryDateTB = (TextBox)item.FindControl("ExpiryDateTB");
+            TextBox cvvTB = (TextBox)item.FindControl("CVVTB");
+
+            if (ProcessPayment(totalPrice, shippingAddressTB.Text, cardNumberTB.Text, expiryDateTB.Text, cvvTB.Text))
             {
-                // Call ProcessTransaction method with correct parameters
-                ProcessTransaction(userId, productId, quantity, ProductPrice, Transaction_date, ProductName, ProductAuthor);
+                if (ProcessTransaction(UserId, button.CommandArgument, quantity, totalPrice, DateTime.Now, paymentMethodDDL.SelectedValue, shippingAddressTB.Text, "Pending", "ProductName", "email@example.com"))
+                {
+                    ShowSuccess("Payment successful. Your order will be processed.");
+                    SendPaymentConfirmationEmail();
+                }
+                else
+                {
+                    ShowError("Transaction failed.");
+                }
             }
             else
             {
-                ShowError("Error: Product details are missing.");
+                ShowError("Payment failed. Please try again.");
             }
         }
 
-       //--------------------------------------------------------------------------------------------------------//
-        /// <summary>
-        /// Method to process the transaction in the database
-        /// </summary>
-        /// <param name="transaction_Id"></param>
-        /// <param name="user_Id"></param>
-        /// <param name="product_Id"></param>
-        /// <param name="quantity"></param>
-        /// <param name="product_price"></param>
-        /// <param name="transaction_date"></param>
-        /// <param name="product_name"></param>
-        /// <param name="author"></param>
-        /// <returns></returns>
-        private bool ProcessTransaction( int user_Id, string product_Id, int quantity, float product_price, DateTime transaction_date, string product_name, string author)
+        protected void QuantityTB_TextChanged(object sender, EventArgs e)
+        {
+            TextBox quantityTextBox = sender as TextBox;
+            RepeaterItem item = quantityTextBox.NamingContainer as RepeaterItem;
+            Label priceLabel = item.FindControl("TotalPriceLabel") as Label;
+
+            int quantity = int.Parse(quantityTextBox.Text);
+            float pricePerUnit = ProductPrice;
+            float totalPrice = pricePerUnit * quantity;
+
+            priceLabel.Text = "R" + totalPrice.ToString("F2");
+        }
+
+        private bool ProcessPayment(float totalPrice, string shippingAddress, string cardNumber, string expiryDate, string cvv)
+        {
+            // Example placeholder for payment processing logic
+            bool paymentSuccess = true;
+
+            // Actual payment processing logic goes here
+
+            return paymentSuccess;
+        }
+
+        private bool ProcessTransaction(int userId, string product_Id, int quantity, float totalAmount, DateTime transaction_date, string paymentMethod, string shippingAddress, string transactionStatus, string productName, string email)
         {
             string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
             bool isSuccess = false;
@@ -211,19 +196,21 @@ namespace CldvPoePartOne
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "INSERT INTO Transactions (User_ID, Product_ID, Quantity, Product_Price, Transaction_date, Product_Name, Author) " +
-                                "VALUES (@User_ID, @Product_ID, @Quantity, @Product_Price, @Transaction_date, @Product_Name, @Author)";
+                    string query = "INSERT INTO Transactions (UserID, ProductID, Quantity, TotalAmount, TransactionDate, PaymentMethod, ShippingAddress, Status, ProductName, Email) " +
+                                   "VALUES (@UserID, @ProductID, @Quantity, @TotalAmount, @TransactionDate, @PaymentMethod, @ShippingAddress, @Status, @ProductName, @Email)";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        // Add parameters
-                        cmd.Parameters.AddWithValue("@User_ID", user_Id);
-                        cmd.Parameters.AddWithValue("@Product_ID", product_Id);
+                        cmd.Parameters.AddWithValue("@UserID", userId);
+                        cmd.Parameters.AddWithValue("@ProductID", product_Id);
                         cmd.Parameters.AddWithValue("@Quantity", quantity);
-                        cmd.Parameters.AddWithValue("@Product_Price", product_price);
-                        cmd.Parameters.AddWithValue("@Transaction_date", transaction_date);
-                        cmd.Parameters.AddWithValue("@Product_Name", product_name);
-                        cmd.Parameters.AddWithValue("@Author", author);
+                        cmd.Parameters.AddWithValue("@TotalAmount", totalAmount);
+                        cmd.Parameters.AddWithValue("@TransactionDate", transaction_date);
+                        cmd.Parameters.AddWithValue("@PaymentMethod", paymentMethod);
+                        cmd.Parameters.AddWithValue("@ShippingAddress", shippingAddress);
+                        cmd.Parameters.AddWithValue("@Status", transactionStatus);
+                        cmd.Parameters.AddWithValue("@ProductName", productName);
+                        cmd.Parameters.AddWithValue("@Email", email);
 
                         int rows = cmd.ExecuteNonQuery();
                         isSuccess = rows > 0;
@@ -232,79 +219,25 @@ namespace CldvPoePartOne
             }
             catch (Exception ex)
             {
-                Response.Write(ex);
+                ShowError("Error processing transaction: " + ex.Message);
             }
             return isSuccess;
         }
-        //--------------------------------------------------------------------------------------------------------//
-       
-        /// <summary>
-        /// calculates the total price for the number of items selected by the user
-        /// </summary>
-        private void UpdateTotalPrice()
+
+        private void SendPaymentConfirmationEmail()
         {
-            if (ProductRepeater.Items.Count > 0)
-            {
-                RepeaterItem item = ProductRepeater.Items[0];
-                TextBox QuantityInput = (TextBox)item.FindControl("QuantityInput");
+            // Code to send email to the user with transaction details
+            ShowSuccess("Payment confirmation email sent.");
+        }
 
-                if (int.TryParse(QuantityInput.Text, out int quantity))
-                {
-                    TotalPrice = ProductPrice * quantity;
-                }
-                else
-                {
-                    TotalPrice = ProductPrice;
-                }
-            }
-           
-        }      
-  
-
-        // Method to show an error message
         private void ShowError(string message)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('" + message + "');", true);
         }
 
-        // Method to show a success message
         private void ShowSuccess(string message)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('" + message + "');", true);
         }
-
-        //--------------------------------------------------------------------------------------------------------//
-        /// <summary>
-        /// this method will handle the item command event of the repeater
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        protected void ProductRepeater_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "Checkout")
-            {
-                Button button = e.CommandSource as Button;
-                RepeaterItem item = (RepeaterItem)button.NamingContainer;
-
-                int productId = int.Parse(e.CommandArgument.ToString());
-                int userId = (int)Session["UserId"];
-                TextBox QuantityInput = (TextBox)item.FindControl("QuantityInput");
-                int quantity = int.Parse(QuantityInput.Text);
-                DateTime transactionDate = DateTime.Now;
-
-                Label PriceLabel = (Label)item.FindControl("TotalPriceLabel");
-                float totalPrice = float.Parse(PriceLabel.Text);
-               
-                if (ProcessTransaction(userId, productId.ToString(), quantity, totalPrice, transactionDate, ProductName, ProductAuthor))
-                {
-                    ShowSuccess("Transaction successful.");
-                }
-                else
-                {
-                    ShowError("Transaction failed.");
-                }
-            }
-        }
     }
 }
-//--------------------------------------------------***DingDong End Of Code***-------------------------------------------------------------//

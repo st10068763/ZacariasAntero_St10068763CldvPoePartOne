@@ -101,11 +101,11 @@
                  <h2>Search Result</h2>
                  <asp:GridView ID="GridViewProducts" runat="server" AutoGenerateColumns="false" CssClass="table table-striped">
                      <Columns>
-                         <asp:BoundField DataField="Product_Name" HeaderText="Product Name" />
-                         <asp:BoundField DataField="Product_Description" HeaderText="Description" />
+                         <asp:BoundField DataField="productName" HeaderText="Product Name" />
+                         <asp:BoundField DataField="productDescription" HeaderText="Description" />
                          <asp:BoundField DataField="Price" HeaderText="Price" />
-                         <asp:BoundField DataField="stock" HeaderText="Stock available" />
-                         <asp:BoundField DataField="Author" HeaderText="Product Author" />
+                         <asp:BoundField DataField="Stock" HeaderText="Stock available" />
+                         <asp:BoundField DataField="productAuthor" HeaderText="Product Author" />
                      </Columns>
                  </asp:GridView>
              </div>
@@ -114,13 +114,13 @@
             <asp:Repeater ID="ProductRepeater" runat="server">
                 <ItemTemplate>
                     <div class="craft-item">
-                        <img src='<%# Eval("Product_Image") %>' alt="Product image" class="img-fluid" />                  
-                        <h2><%# Eval("Product_Name") %></h2>
-                        <p><%# Eval("Product_Description") %></p>
-                        <p>Author: <%# Eval("Author") %></p>
+                        <img src='<%# Eval("productImage") %>' alt="Product image" class="img-fluid" />                  
+                        <h2><%# Eval("productName") %></h2>
+                        <p><%# Eval("productDescription") %></p>
+                        <p>Author: <%# Eval("productAuthor") %></p>
                         <p>Price: R<%# Eval("Price") %></p>
                         <p>Stock: <%# Eval("Stock") %></p>                   
-                        <asp:Button ID="BuyButton" runat="server" Text="Buy" CssClass="btn btn-primary" OnClick="BuyButton_Click" CommandArgument='<%# Eval("Product_ID") %>' />
+                        <asp:Button ID="BuyButton" runat="server" Text="Buy" CssClass="btn btn-primary" OnClick="BuyButton_Click" CommandArgument='<%# Eval("ProductID") %>' />
                     </div>
                 </ItemTemplate>
             </asp:Repeater>

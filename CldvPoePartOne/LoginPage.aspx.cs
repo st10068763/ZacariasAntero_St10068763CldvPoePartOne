@@ -11,16 +11,15 @@ namespace CldvPoePartOne
 
         }
 
-        // Function to show error messages in the frontend
+       
         private void ShowError(string message)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('{message}');", true);
         }
 
-        // Function to verify password hashes (requires secure implementation)
         private bool VerifyPassword(string inputPassword, string storedHash)
         {
-            // Example implementation of password verification. Adjust as needed.
+           
             return inputPassword == storedHash;
         }
 
@@ -38,7 +37,7 @@ namespace CldvPoePartOne
             }
 
             // Connect to SQL Server database
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
             // Create a connection to the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -47,7 +46,7 @@ namespace CldvPoePartOne
                     // Open the connection
                     connection.Open();
                     // Query to retrieve user ID, password, and role
-                    string query = "SELECT User_ID, Password_hash, Role FROM Users WHERE (User_Name = @username OR Email = @username)";
+                    string query = "SELECT UserID, PasswordHash, UserRole FROM Users WHERE (Username = @username OR Email = @username)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@username", usernameInput);
@@ -58,16 +57,16 @@ namespace CldvPoePartOne
                             if (reader.HasRows)
                             {
                                 reader.Read();
-                                int userId = (int)reader["User_ID"];
-                                string storedHash = reader["Password_hash"].ToString();
-                                string role = reader["Role"].ToString();
+                                int userId = (int)reader["UserID"];
+                                string storedHash = reader["PasswordHash"].ToString();
+                                string role = reader["UserRole"].ToString();
 
                                 // Verify the password
                                 if (VerifyPassword(passwordInput, storedHash))
                                 {
                                     // Successful login, set session variable and redirect
                                     Session["UserId"] = userId;
-                                    Session["Role"] = role;
+                                    Session["UserRole"] = role;
                                     // Redirect to the home page
                                     Response.Redirect("Default.aspx");
                                 }

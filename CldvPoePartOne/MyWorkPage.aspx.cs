@@ -28,7 +28,7 @@ namespace CldvPoePartOne
         {
             var searchQuery = "%" + query + "%";
             // connection string to connect to the database
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 // open the connection to the database
@@ -51,7 +51,7 @@ namespace CldvPoePartOne
         // Method to load the products from the database
         private void LoadProducts()
         {
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -113,7 +113,7 @@ namespace CldvPoePartOne
             // Get the user ID from the session
             int userId = (int)Session["UserId"];
             // Connect to the database
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -201,7 +201,7 @@ namespace CldvPoePartOne
         private void InsertNewProduct(string productName, string productDescription, float price, int stock, string productAuthor, string productImage)
         {
             // Connect to the database
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

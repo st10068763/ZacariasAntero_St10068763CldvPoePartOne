@@ -1,20 +1,20 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SigninPage.aspx.cs" Inherits="CldvPoePartOne.SigninPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SignupPage.aspx.cs" Inherits="CldvPoePartOne.SignupPage" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Sign In - KhumaloCraft</title>
+    <title>Sign Up - KhumaloCraft</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/Scripts/MyStyleSheet.css"/>
 
     <style>
         body {
-             font-family: 'Arial', sans-serif;
-             background-color: #f8f9fa;
-             padding-top: 20px;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 20px;
         }
         .container {
             height: 100vh;
@@ -22,20 +22,20 @@
             justify-content: center;
             align-items: center;
         }
-        .signin-box {           
+        .signup-box {
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); /* Modern shadow for visibility */
             text-align: center;
             width: 100%;
-            max-width: 450px;
+            max-width: 600px;
         }
-        .signin-box h2 {
+        .signup-box h2 {
             margin-bottom: 20px;
             font-size: 24px;
             font-weight: bold;
             color: white;
-           
+            background-color: #007bff;
             padding: 10px;
             border-radius: 10px;
             display: inline-block;
@@ -47,7 +47,7 @@
             font-size: 16px;
             background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent input background */
         }
-        .signin-button {
+        .signup-button {
             background-color: #007bff;
             color: white;
             padding: 15px 20px;
@@ -58,7 +58,7 @@
             font-weight: bold;
             transition: background-color 0.3s ease;
         }
-        .signin-button:hover {
+        .signup-button:hover {
             background-color: #0056b3;
         }
         .role-select {
@@ -66,7 +66,7 @@
             border-radius: 10px;
             padding: 10px;
             font-size: 16px;
-            background-color:black); /* Semi-transparent select background */
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent select background */
         }
         .error-message {
             color: red;
@@ -78,12 +78,17 @@
 <body>
     <form id="form1" runat="server" onsubmit="return validateForm()">
         <div class="container">
-            <div class="signin-box">
-                <h2>Sign In</h2>
+            <div class="signup-box">
+                <h2>Sign Up</h2>
                 <!-- Form fields -->
-                <input type="text" runat="server" id="name" class="input-field form-control" placeholder="Enter user name" />
-                <input type="email" runat="server" id="email" class="input-field form-control" placeholder="Enter user email" />
-                <input type="password" runat="server" id="password" class="input-field form-control" placeholder="Enter user password" />
+                <input type="text" runat="server" id="usernameTB" class="input-field form-control" placeholder="Enter username" />
+                <input type="email" runat="server" id="email" class="input-field form-control" placeholder="Enter email" />
+                <input type="password" runat="server" id="password" class="input-field form-control" placeholder="Enter password" />
+                <input type="text" runat="server" id="firstname" class="input-field form-control" placeholder="Enter first name" />
+                <input type="text" runat="server" id="lastname" class="input-field form-control" placeholder="Enter last name" />
+                <input type="text" runat="server" id="phonenumber" class="input-field form-control" placeholder="Enter phone number" />
+                <input type="text" runat="server" id="location" class="input-field form-control" placeholder="Enter location" />
+
                 <!-- Role selection -->
                 <label for="role" class="sr-only">Select role</label>
                 <select id="role" runat="server" class="role-select form-control">
@@ -91,8 +96,8 @@
                     <option value="buyer">Buyer</option>
                     <option value="seller">Seller</option>
                 </select>
-                <!-- Sign in button -->
-                <button type="submit" runat="server" onserverclick="Signin_Click" class="signin-button btn btn-primary btn-block mt-4">Create Account</button>
+                <!-- Sign up button -->
+                <asp:Button ID="createBtn" runat="server" Text="Create new account"  OnClick="btnSignup_click" class="signup-button btn btn-primary btn-block mt-4"/>
 
                 <!-- link to the login page -->
                 <a href="LoginPage.aspx" class="btn btn-link mt-3">Already have an account? Login</a>
@@ -108,15 +113,23 @@
 
     <script>
         function validateForm() {
-            const nameField = document.getElementById("name");
+            const usernameField = document.getElementById("username");
             const emailField = document.getElementById("email");
             const passwordField = document.getElementById("password");
+            const firstnameField = document.getElementById("firstname");
+            const lastnameField = document.getElementById("lastname");
+            const phonenumberField = document.getElementById("phonenumber");
+            const locationField = document.getElementById("location");
             const roleField = document.getElementById("role");
             const errorMessage = document.getElementById("error-message");
 
-            if (nameField.value.trim() === "" ||
+            if (usernameField.value.trim() === "" ||
                 emailField.value.trim() === "" ||
                 passwordField.value.trim() === "" ||
+                firstnameField.value.trim() === "" ||
+                lastnameField.value.trim() === "" ||
+                phonenumberField.value.trim() === "" ||
+                locationField.value.trim() === "" ||
                 roleField.value === "") {
                 errorMessage.innerText = "All fields are required.";
                 return false;

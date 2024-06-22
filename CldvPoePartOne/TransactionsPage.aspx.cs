@@ -65,7 +65,7 @@ namespace CldvPoePartOne
         private List<Product> GetDataForRepeater()
         {
             List<Product> products = new List<Product>();
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -115,7 +115,7 @@ namespace CldvPoePartOne
             if (!string.IsNullOrWhiteSpace(productId))
             {
                 // connection string
-                string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+                string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
                 // using using statement to ensure the connection is closed after the operation is done
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -203,7 +203,7 @@ namespace CldvPoePartOne
         /// <returns></returns>
         private bool ProcessTransaction( int user_Id, string product_Id, int quantity, float product_price, DateTime transaction_date, string product_name, string author)
         {
-            string connectionString = "Data Source=sqldatabasekhumalo.database.windows.net;Initial Catalog=khumaloDatabase;Persist Security Info=True;User ID=st10068763;Password=MyName007";
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
             bool isSuccess = false;
 
             try

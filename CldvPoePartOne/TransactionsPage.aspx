@@ -58,7 +58,33 @@
     </style>
 </head>
 <body>
+
+     <!-- Top Navigation bar -->
+         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+             <div class="container">
+                 <a class="navbar-brand" href="Default.aspx">KhumaloCraft</a>
+                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                     <span class="navbar-toggler-icon"></span>
+                 </button>
+                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                     <ul class="navbar-nav ml-auto">
+                         <li class="nav-item"><a class="nav-link" href="default.aspx">Home</a></li>
+                         <li class="nav-item"><a class="nav-link" href="About.aspx">About Us</a></li>
+                         <li class="nav-item"><a class="nav-link" href="Contact.aspx">Contact Us</a></li>
+                         <li class="nav-item"><a class="nav-link" href="MyWorkPage.aspx">Crafts</a></li>
+                     </ul>
+                 </div>
+             </div>
+         </nav>
+ <!-- End of Navigation bar -->
+
     <form id="form1" runat="server">
+         <!-- Error Message-->
+ <asp:Label ID="ErrorMessageLabel" runat="server" CssClass="error-message" />
+ <!-- success message-->
+ <asp:Label ID="SuccessMessageLabel" runat="server" CssClass="success-message" />
+
        <asp:Repeater ID="ProductRepeater" runat="server">
             <ItemTemplate>
                 <div class="container">
@@ -71,43 +97,54 @@
                         <p>Available Stock: <%# Eval("stock") %></p>
                         <div class="quantity-selector">
                             <asp:Label ID="QuantityLabel" runat="server" Text="Enter product quantity: " />
-                            <asp:TextBox ID="QuantityTB" runat="server" placeholder="Enter the quantity" CssClass="quantity-input" Text="1" AutoPostBack="true" OnTextChanged="QuantityTB_TextChanged" />
+                            <asp:TextBox ID="QuantityTB" runat="server" CssClass="quantity-input" Text="1" AutoPostBack="true" OnTextChanged="QuantityTB_TextChanged" />
                         </div>
                         <p>Total Price: R<asp:Label ID="TotalPriceLabel" runat="server" Text='<%# Eval("price") %>' /></p>
                     </div>
-                    <!-- payment details-->
-                    <div class="transaction-item">
-                        <h2>Payment Details</h2>
-                        <div class="form-group">
-                            <label for="shippingAddressTB">Shipping address:</label>
-                            <asp:TextBox ID="shippingAddressTB" runat="server" CssClass="form-control" placeholder="Enter the shipping address" />
-                        </div>
-                        <!-- payment methods-->
-                        <div class="form-group">
-                            <label for="PaymentMethodDDL">Payment Method:</label>
-                            <asp:DropDownList ID="PaymentMethodDDL" runat="server" CssClass="form-control">
-                                <asp:ListItem Value="CreditCard">Credit Card</asp:ListItem>
-                                <asp:ListItem Value="DebitCard">Debit Card</asp:ListItem>
-                                <asp:ListItem Value="EFT">EFT</asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                        <div class="form-group">
-                            <label for="CardNumberTB">Card Number:</label>
-                            <asp:TextBox ID="CardNumberTB" runat="server" CssClass="form-control" placeholder="Enter card number" />
-                        </div>
-                        <div class="form-group">
-                            <label for="ExpiryDateTB">Expiry Date:</label>
-                            <asp:TextBox ID="ExpiryDateTB" runat="server" CssClass="form-control" placeholder="Enter card expiry date" />
-                        </div>
-                        <div class="form-group">
-                            <label for="CVVTB">CVV:</label>
-                            <asp:TextBox ID="CVVTB" runat="server" CssClass="form-control" placeholder="Enter CVV" />
-                        </div>
-                        <asp:Button ID="PayButton" runat="server" Text="Pay" CssClass="checkout-button" OnClick="PayButton_Click" CommandArgument='<%# Eval("ProductID") %>' />
+
+                    
+                        <!-- payment details-->
+                <div class="form-group">
+                    <h2>Payment Details</h2>
+   
+                    <div class="form-group">
+                        <label for="shippingAddressTB">Shipping address:</label>
+                        <asp:TextBox ID="shippingAddressTB" runat="server" CssClass="form-control" placeholder="Enter the shipping address" />
+                    </div>
+                    <!-- payment methods-->
+                    <div class="form-group">
+                        <label for="PaymentMethodDDL">Payment Method:</label>
+                        <asp:DropDownList ID="PaymentMethodDDL" runat="server" CssClass="form-control">
+                            <asp:ListItem Value="CreditCard">Credit Card</asp:ListItem>
+                            <asp:ListItem Value="DebitCard">Debit Card</asp:ListItem>
+                            <asp:ListItem Value="EFT">EFT</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+                    <div class="form-group">
+                        <label for="CardNumberTB">Card Number:</label>
+                        <asp:TextBox ID="CardNumberTB" runat="server" CssClass="form-control" placeholder="Enter card number" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ExpiryDateTB">Expiry Date:</label>
+                        <asp:TextBox ID="ExpiryDateTB" runat="server" CssClass="form-control" placeholder="Enter card expiry date" />
+                    </div>
+                    <div class="form-group">
+                        <label for="CVVTB">CVV:</label>
+                        <asp:TextBox ID="CVVTB" runat="server" CssClass="form-control" placeholder="Enter CVV" />
+                    </div>
+
+                    <div class="form-group">
+                    <label for="PaymentReceiptTB">Payment receipt:</label>
+                    <asp:TextBox ID="PaymentReceiptTB" runat="server" CssClass="form-control" placeholder="Enter your email to recieve the proof of payment of your transaction" />
                     </div>
                 </div>
+
+    <asp:Button ID="PayButton" runat="server" Text="Pay" CssClass="checkout-button" OnClick="PayButton_Click" CommandArgument='<%# Eval("ProductID") %>' />
+</div>
             </ItemTemplate>
         </asp:Repeater>
+
+         
     </form>
 
     <!-- Bootstrap JS and dependencies -->

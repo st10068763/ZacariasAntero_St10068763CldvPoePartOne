@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net;
+using System.Net.Mail;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace CldvPoePartOne
 {
@@ -22,9 +25,8 @@ namespace CldvPoePartOne
         // gets the user id from the session
         public int UserId => (int)Session["UserId"];
 
-        public float ProductPrice;
         public int Quantity = 1;
-        public float TotalPrice;
+        public decimal TotalPrice;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -111,6 +113,9 @@ namespace CldvPoePartOne
                                     productAuthor = reader["productAuthor"].ToString(),
                                     productImage = reader["productImage"].ToString()
                                 };
+                                // Store product price in session
+                                Session["ProductPrice"] = product.price;
+                                Session["ProductStock"] = product.stock;
                                 ProductRepeater.DataSource = new List<Product> { product };
                                 ProductRepeater.DataBind();
                             }
@@ -130,38 +135,76 @@ namespace CldvPoePartOne
 
         protected void PayButton_Click(object sender, EventArgs e)
         {
-            Button button = sender as Button;
-            RepeaterItem item = (RepeaterItem)button.NamingContainer;
-
-            TextBox quantityTextBox = (TextBox)item.FindControl("QuantityTB");
-            int quantity = int.Parse(quantityTextBox.Text);
-
-            Label totalPriceLabel = (Label)item.FindControl("TotalPriceLabel");
-            float totalPrice = float.Parse(totalPriceLabel.Text.Replace("R", ""));
-
-            TextBox shippingAddressTB = (TextBox)item.FindControl("shippingAddressTB");
-            DropDownList paymentMethodDDL = (DropDownList)item.FindControl("PaymentMethodDDL");
-            TextBox cardNumberTB = (TextBox)item.FindControl("CardNumberTB");
-            TextBox expiryDateTB = (TextBox)item.FindControl("ExpiryDateTB");
-            TextBox cvvTB = (TextBox)item.FindControl("CVVTB");
-
-            if (ProcessPayment(totalPrice, shippingAddressTB.Text, cardNumberTB.Text, expiryDateTB.Text, cvvTB.Text))
+            try
             {
-                if (ProcessTransaction(UserId, button.CommandArgument, quantity, totalPrice, DateTime.Now, paymentMethodDDL.SelectedValue, shippingAddressTB.Text, "Pending", "ProductName", "email@example.com"))
+                Button button = sender as Button;
+                if (button != null)
                 {
-                    ShowSuccess("Payment successful. Your order will be processed.");
-                    SendPaymentConfirmationEmail();
+                    RepeaterItem item = button.NamingContainer as RepeaterItem;
+                    if (item != null)
+                    {
+                        TextBox quantityTextBox = (TextBox)item.FindControl("QuantityTB");
+                        int quantity = int.Parse(quantityTextBox.Text);
+
+                        decimal productPrice = (decimal)Session["ProductPrice"];
+                        decimal totalPrice = productPrice * quantity;
+                        int stock = (int)Session["ProductStock"];
+
+                        if (quantity > stock)
+                        {
+                            ErrorMessageLabel.Text = "Quantity selected exceeds available stock.";
+                            return;
+                        }
+
+                        TextBox shippingAddressTB = (TextBox)item.FindControl("shippingAddressTB");
+                        DropDownList paymentMethodDDL = (DropDownList)item.FindControl("PaymentMethodDDL");
+                        TextBox cardNumberTB = (TextBox)item.FindControl("CardNumberTB");
+                        TextBox expiryDateTB = (TextBox)item.FindControl("ExpiryDateTB");
+                        TextBox cvvTB = (TextBox)item.FindControl("CVVTB");
+                        // gets the user email address
+                        TextBox PaymentReceiptTB = (TextBox)item.FindControl("PaymentReceiptTB"); 
+
+                        if (ProcessPayment(totalPrice, shippingAddressTB.Text, cardNumberTB.Text, expiryDateTB.Text, cvvTB.Text))
+                        {
+                            string productName = ((Label)item.FindControl("ProductNameLabel"))?.Text ?? "Unknown Product";
+
+                            //string productName = ((Label)item.FindControl("ProductNameLabel")).Text; 
+                            string email = PaymentReceiptTB.Text; // Use the email from the form
+
+                            if (ProcessTransaction(UserId, button.CommandArgument, quantity, totalPrice, DateTime.Now, paymentMethodDDL.SelectedValue, shippingAddressTB.Text, "Pending", productName, email))
+                            {
+                                UpdateProductStock(button.CommandArgument, stock - quantity);
+                                SuccessMessageLabel.Text = "Payment successful. Your order will be processed.";
+                                // Call the method to send the email
+                                SendPaymentConfirmationEmail(productName, quantity, totalPrice, paymentMethodDDL.SelectedValue, cardNumberTB.Text, email);
+                            }
+                            else
+                            {
+                                ErrorMessageLabel.Text = "Transaction failed. Please try again.";
+                            }
+                        }
+                        else
+                        {
+                            ErrorMessageLabel.Text = "Payment failed. Please try again.";
+                        }
+                    }
+                    else
+                    {
+                        ErrorMessageLabel.Text = "Repeater item not found.";
+                    }
                 }
                 else
                 {
-                    ShowError("Transaction failed.");
+                    ErrorMessageLabel.Text = "Button not found.";
                 }
             }
-            else
+            catch (Exception ex)
             {
-                ShowError("Payment failed. Please try again.");
+                ErrorMessageLabel.Text = "Error processing payment: " + ex.Message;
             }
         }
+
+
 
         protected void QuantityTB_TextChanged(object sender, EventArgs e)
         {
@@ -170,13 +213,13 @@ namespace CldvPoePartOne
             Label priceLabel = item.FindControl("TotalPriceLabel") as Label;
 
             int quantity = int.Parse(quantityTextBox.Text);
-            float pricePerUnit = ProductPrice;
-            float totalPrice = pricePerUnit * quantity;
+            decimal productPrice = (decimal)Session["ProductPrice"];
+            decimal totalPrice = productPrice * quantity;
 
             priceLabel.Text = "R" + totalPrice.ToString("F2");
         }
 
-        private bool ProcessPayment(float totalPrice, string shippingAddress, string cardNumber, string expiryDate, string cvv)
+        private bool ProcessPayment(decimal totalPrice, string shippingAddress, string cardNumber, string expiryDate, string cvv)
         {
             // Example placeholder for payment processing logic
             bool paymentSuccess = true;
@@ -186,7 +229,7 @@ namespace CldvPoePartOne
             return paymentSuccess;
         }
 
-        private bool ProcessTransaction(int userId, string product_Id, int quantity, float totalAmount, DateTime transaction_date, string paymentMethod, string shippingAddress, string transactionStatus, string productName, string email)
+        private bool ProcessTransaction(int userId, string product_Id, int quantity, decimal totalAmount, DateTime transaction_date, string paymentMethod, string shippingAddress, string transactionStatus, string productName, string email)
         {
             string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
             bool isSuccess = false;
@@ -224,11 +267,87 @@ namespace CldvPoePartOne
             return isSuccess;
         }
 
-        private void SendPaymentConfirmationEmail()
+        /// <summary>
+        /// Method to update product stock after a successful transaction
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="newStock"></param>
+        private void UpdateProductStock(string productId, int newStock)
         {
-            // Code to send email to the user with transaction details
-            ShowSuccess("Payment confirmation email sent.");
+            string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    // update product stock based on the stock user bought
+                    string query = "UPDATE ProductTB SET stock = @Stock WHERE ProductID = @ProductId";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Stock", newStock);
+                        command.Parameters.AddWithValue("@ProductId", productId);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowError("Error updating product stock: " + ex.Message);
+                }
+            }
         }
+
+        /// <summary>
+        /// Method to send email to the user
+        /// </summary>
+        /// <param name="productName"></param>
+        /// <param name="quantity"></param>
+        /// <param name="totalPrice"></param>
+        /// <param name="paymentMethod"></param>
+        /// <param name="cardNumber"></param>
+        /// <param name="email"></param>
+        private void SendPaymentConfirmationEmail(string productName, int quantity, decimal totalPrice, string paymentMethod, string cardNumber, string email)
+        {
+            try
+            {
+                string fromEmail = "zarcoticmock@gmail.com"; 
+                string fromPassword = "HeyZarcotic01"; 
+                string subject = "Payment Confirmation";
+                string lastFourDigits = cardNumber.Substring(cardNumber.Length - 4);
+
+                string body = $"<p>Thanks for shopping with us!</p>" +
+                              $"<p><strong>Your Transaction Details:</strong></p>" +
+                              $"<p>Product Name: {productName}</p>" +
+                              $"<p>Quantity: {quantity}</p>" +
+                              $"<p>Total Price: R{totalPrice:F2}</p>" +
+                              $"<p>Payment Method: {paymentMethod} (**** **** **** {lastFourDigits})</p>";
+
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(fromEmail);
+                    mail.To.Add(email);
+                    mail.Subject = subject;
+                    mail.Body = body;
+                    mail.IsBodyHtml = true;
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = new NetworkCredential("zarcoticmock@gmail.com", "HeyZarcotic01");
+                        smtp.EnableSsl = true; 
+                        smtp.Send(mail);
+                    }
+
+                }
+
+                ShowSuccess("Payment confirmation email sent.");
+            }
+            catch (Exception ex)
+            {
+                ShowError("Error sending email: " + ex.Message);
+            }
+        }
+
 
         private void ShowError(string message)
         {

@@ -23,7 +23,12 @@ namespace CldvPoePartOne
             return inputPassword == storedHash;
         }
 
-        protected void btnLogin_Click(object sender, EventArgs e)
+        /// <summary>
+        /// login button click event handler that authenticates the user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected  void btnLogin_Click(object sender, EventArgs e)
         {
             // Retrieve form input values
             string usernameInput = usernameTB.Value;
@@ -84,11 +89,11 @@ namespace CldvPoePartOne
                 }
                 catch (SqlException ex)
                 {
-                    ShowError($"Database connection error: {ex.Message}"); // Handle SQL exceptions
+                    ShowError($"Database connection error: {ex.Message}"); 
                 }
                 finally
                 {
-                    connection.Close(); // Close the connection
+                    connection.Close(); 
                 }
             }
         }

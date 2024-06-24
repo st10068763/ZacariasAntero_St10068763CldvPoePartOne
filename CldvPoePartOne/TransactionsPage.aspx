@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="TransactionsPage.aspx.cs" Inherits="CldvPoePartOne.TransactionsPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="TransactionsPage.aspx.cs" Inherits="CldvPoePartOne.TransactionsPage" Async="true" %>
 
 <!DOCTYPE html>
 
@@ -80,11 +80,7 @@
  <!-- End of Navigation bar -->
 
     <form id="form1" runat="server">
-         <!-- Error Message-->
- <asp:Label ID="ErrorMessageLabel" runat="server" CssClass="error-message" />
- <!-- success message-->
- <asp:Label ID="SuccessMessageLabel" runat="server" CssClass="success-message" />
-
+        
        <asp:Repeater ID="ProductRepeater" runat="server">
             <ItemTemplate>
                 <div class="container">
@@ -139,10 +135,14 @@
                     </div>
                 </div>
 
-    <asp:Button ID="PayButton" runat="server" Text="Pay" CssClass="checkout-button" OnClick="PayButton_Click" CommandArgument='<%# Eval("ProductID") %>' />
-</div>
+                <asp:Button ID="PayButton" runat="server" Text="Pay" CssClass="checkout-button" OnClick="PayButton_Click" CommandArgument='<%# Eval("ProductID") %>' />
+            </div>
             </ItemTemplate>
         </asp:Repeater>
+         <!-- Error Message-->
+         <asp:Label ID="ErrorMessageLabel" runat="server" CssClass="error-message" />
+         <!-- success message-->
+         <asp:Label ID="SuccessMessageLabel" runat="server" CssClass="success-message" />
 
          
     </form>

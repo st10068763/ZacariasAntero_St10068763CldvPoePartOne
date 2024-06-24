@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
+using System.Web.Management;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
@@ -11,6 +15,7 @@ namespace CldvPoePartOne
 {
     public partial class TransactionsPage : System.Web.UI.Page
     {
+
         public class Product
         {
             public int ProductID { get; set; }
@@ -45,6 +50,10 @@ namespace CldvPoePartOne
             }
         }
 
+        /// <summary>
+        /// Retrieves data for the repeater control
+        /// </summary>
+        /// <returns></returns>
         private List<Product> GetDataForRepeater()
         {
             List<Product> products = new List<Product>();
@@ -85,6 +94,10 @@ namespace CldvPoePartOne
             return products;
         }
 
+        /// <summary>
+        /// Loads product details based on the product ID
+        /// </summary>
+        /// <param name="productId"></param>
         private void LoadProductDetails(string productId)
         {
             string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
@@ -132,8 +145,12 @@ namespace CldvPoePartOne
                 }
             }
         }
-
-        protected void PayButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// pay button click event that processes the payment and transaction
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected async void PayButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -161,22 +178,20 @@ namespace CldvPoePartOne
                         TextBox cardNumberTB = (TextBox)item.FindControl("CardNumberTB");
                         TextBox expiryDateTB = (TextBox)item.FindControl("ExpiryDateTB");
                         TextBox cvvTB = (TextBox)item.FindControl("CVVTB");
-                        // gets the user email address
-                        TextBox PaymentReceiptTB = (TextBox)item.FindControl("PaymentReceiptTB"); 
+                        TextBox PaymentReceiptTB = (TextBox)item.FindControl("PaymentReceiptTB");
 
                         if (ProcessPayment(totalPrice, shippingAddressTB.Text, cardNumberTB.Text, expiryDateTB.Text, cvvTB.Text))
                         {
                             string productName = ((Label)item.FindControl("ProductNameLabel"))?.Text ?? "Unknown Product";
-
-                            //string productName = ((Label)item.FindControl("ProductNameLabel")).Text; 
-                            string email = PaymentReceiptTB.Text; // Use the email from the form
+                            string email = PaymentReceiptTB.Text;
 
                             if (ProcessTransaction(UserId, button.CommandArgument, quantity, totalPrice, DateTime.Now, paymentMethodDDL.SelectedValue, shippingAddressTB.Text, "Pending", productName, email))
                             {
                                 UpdateProductStock(button.CommandArgument, stock - quantity);
                                 SuccessMessageLabel.Text = "Payment successful. Your order will be processed.";
+
                                 // Call the method to send the email
-                                SendPaymentConfirmationEmail(productName, quantity, totalPrice, paymentMethodDDL.SelectedValue, cardNumberTB.Text, email);
+                                await SendPaymentConfirmationEmail(productName, quantity, totalPrice, paymentMethodDDL.SelectedValue, cardNumberTB.Text, email);
                             }
                             else
                             {
@@ -205,7 +220,11 @@ namespace CldvPoePartOne
         }
 
 
-
+        /// <summary>
+        /// Quantity text box change event to calculate the total price based on the quantity entered
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void QuantityTB_TextChanged(object sender, EventArgs e)
         {
             TextBox quantityTextBox = sender as TextBox;
@@ -216,19 +235,38 @@ namespace CldvPoePartOne
             decimal productPrice = (decimal)Session["ProductPrice"];
             decimal totalPrice = productPrice * quantity;
 
-            priceLabel.Text = "R" + totalPrice.ToString("F2");
+            priceLabel.Text = totalPrice.ToString("F2");
         }
 
+        /// <summary>
+        /// method to process payment
+        /// </summary>
+        /// <param name="totalPrice"></param>
+        /// <param name="shippingAddress"></param>
+        /// <param name="cardNumber"></param>
+        /// <param name="expiryDate"></param>
+        /// <param name="cvv"></param>
+        /// <returns></returns>
         private bool ProcessPayment(decimal totalPrice, string shippingAddress, string cardNumber, string expiryDate, string cvv)
         {
-            // Example placeholder for payment processing logic
             bool paymentSuccess = true;
-
-            // Actual payment processing logic goes here
 
             return paymentSuccess;
         }
-
+        /// <summary>
+        /// method to process transaction and insert into the database
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="product_Id"></param>
+        /// <param name="quantity"></param>
+        /// <param name="totalAmount"></param>
+        /// <param name="transaction_date"></param>
+        /// <param name="paymentMethod"></param>
+        /// <param name="shippingAddress"></param>
+        /// <param name="transactionStatus"></param>
+        /// <param name="productName"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         private bool ProcessTransaction(int userId, string product_Id, int quantity, decimal totalAmount, DateTime transaction_date, string paymentMethod, string shippingAddress, string transactionStatus, string productName, string email)
         {
             string connectionString = "Data Source=newkhumaloserver.database.windows.net;Initial Catalog=newkhumaloDb;User ID=st10068763;Password=MyName007";
@@ -306,54 +344,63 @@ namespace CldvPoePartOne
         /// <param name="paymentMethod"></param>
         /// <param name="cardNumber"></param>
         /// <param name="email"></param>
-        private void SendPaymentConfirmationEmail(string productName, int quantity, decimal totalPrice, string paymentMethod, string cardNumber, string email)
+        private async Task SendPaymentConfirmationEmail(string productName, int quantity, decimal totalPrice, string paymentMethod, string cardNumber, string email)
         {
+            var fromEmail = "zarcoticmock@gmail.com";
+            var fromPassword = "HeyZarcotic01";
+            var smtpHost = "smtp.gmail.com";
+            var smtpPort = 587;
+
             try
             {
-                string fromEmail = "zarcoticmock@gmail.com"; 
-                string fromPassword = "HeyZarcotic01"; 
-                string subject = "Payment Confirmation";
-                string lastFourDigits = cardNumber.Substring(cardNumber.Length - 4);
-
-                string body = $"<p>Thanks for shopping with us!</p>" +
-                              $"<p><strong>Your Transaction Details:</strong></p>" +
-                              $"<p>Product Name: {productName}</p>" +
-                              $"<p>Quantity: {quantity}</p>" +
-                              $"<p>Total Price: R{totalPrice:F2}</p>" +
-                              $"<p>Payment Method: {paymentMethod} (**** **** **** {lastFourDigits})</p>";
-
-                using (MailMessage mail = new MailMessage())
+                using (var client = new SmtpClient(smtpHost, smtpPort))
                 {
-                    mail.From = new MailAddress(fromEmail);
-                    mail.To.Add(email);
-                    mail.Subject = subject;
-                    mail.Body = body;
-                    mail.IsBodyHtml = true;
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential(fromEmail, fromPassword);
 
-                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    var mailMessage = new MailMessage
                     {
-                        smtp.UseDefaultCredentials = false;
-                        smtp.Credentials = new NetworkCredential("zarcoticmock@gmail.com", "HeyZarcotic01");
-                        smtp.EnableSsl = true; 
-                        smtp.Send(mail);
-                    }
+                        From = new MailAddress(fromEmail),
+                        Subject = "Payment Confirmation",
+                        Body = $"<p>Thanks for shopping with us!</p>" +
+                               $"<p><strong>Your Transaction Details:</strong></p>" +
+                               $"<p>Product Name: {productName}</p>" +
+                               $"<p>Quantity: {quantity}</p>" +
+                               $"<p>Total Price: R{totalPrice:F2}</p>" +
+                               $"<p>Payment Method: {paymentMethod} (**** **** **** {cardNumber.Substring(cardNumber.Length - 4)})</p>",
+                        IsBodyHtml = true
+                    };
 
+                    mailMessage.To.Add(email);
+
+                    await client.SendMailAsync(mailMessage);
+                    ShowSuccess("Payment confirmation email sent.");
                 }
-
-                ShowSuccess("Payment confirmation email sent.");
+            }
+            catch (SmtpException smtpEx)
+            {
+                // Log detailed SMTP exceptions
+                ShowError($"SMTP error: {smtpEx.Message} - {smtpEx.InnerException?.Message}");
             }
             catch (Exception ex)
             {
-                ShowError("Error sending email: " + ex.Message);
+                // Log general exceptions
+                ShowError($"Error sending email: {ex.Message} - {ex.InnerException?.Message}");
             }
         }
 
-
+        /// <summary>
+        /// displays an error message in a pop-up alert
+        /// </summary>
+        /// <param name="message"></param>
         private void ShowError(string message)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('" + message + "');", true);
         }
-
+        /// <summary>
+        /// will display success message in a pop-up alert
+        /// </summary>
+        /// <param name="message"></param>
         private void ShowSuccess(string message)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('" + message + "');", true);
